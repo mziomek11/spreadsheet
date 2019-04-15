@@ -1,0 +1,31 @@
+{
+  "name": "spreadsheet-mern",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hommat/spreadsheet.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hommat/spreadsheet/issues"
+  },
+  "homepage": "https://github.com/hommat/spreadsheet#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^4.1.0",
+    "config": "^3.1.0",
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.11"
+  }
+}
