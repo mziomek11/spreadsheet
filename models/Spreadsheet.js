@@ -9,6 +9,10 @@ const SpreadsheetSchema = new Schema({
     date: {
         type: Date,
         default: Date.now()
+    },
+    owner: {
+        type: String,
+        required: true
     }
 });
 

@@ -11,7 +11,7 @@ const User = require("../../models/User");
 // @POST    api/auth
 // @desc    Auth User
 // @access  Public
-router.post("/", (req, res) => {
+router.post("", (req, res) => {
     const {email, password} = req.body;
 
     if(!email || !password){
@@ -30,11 +30,10 @@ router.post("/", (req, res) => {
                 (err, token) => {
                     if(err) throw err;
                     res.json({user: {
-                        token,
                         id: user.id,
                         name: user.name,
                         email: user.email
-                    }});
+                    }, token});
                 }
             );
         })
