@@ -1,32 +1,32 @@
 import React, {useState, useEffect} from "react";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
-import {updateSheet, getSheetDetail} from "../../store/actions/sheetActions";
+import {updateSheetInfo, getSheetDetail} from "../../store/actions/sheetActions";
 
-const SpreadsheetInfoUpdateForm = ({match, updateSheet, getSheetDetail, actualSheet, history}) => {
+const SpreadsheetInfoUpdateForm = ({match, updateSheetInfo, getSheetDetail, actualSheetInfo, history}) => {
     const [name, setName] = useState("");
     useEffect(() => {
         const {id} = match.params;
         getSheetDetail(id);
     }, []);
     useEffect(() => {
-        if(actualSheet){
-            setName(actualSheet.name);
+        if(actualSheetInfo){
+            setName(actualSheetInfo.name);
         }
-    }, [actualSheet])
+    }, [actualSheetInfo])
     const handleSubmit = e => {
         e.preventDefault();
         const {id} = match.params;
         const data = {name};
-        updateSheet(id, data);
+        updateSheetInfo(id, data);
         history.push("/");
     }
-    if(!actualSheet){
+    if(!actualSheetInfo){
         return null;
     }
 
     return (
-        <div className="shh-form">
+        <div className="shh-form container">
             <form onSubmit={handleSubmit}>
                 <div className="input-field">
                     <input placeholder="Name" value={name} name="name" type="text" onChange={e => setName(e.target.value)} />
@@ -45,13 +45,13 @@ const SpreadsheetInfoUpdateForm = ({match, updateSheet, getSheetDetail, actualSh
 
 const mapStateToProps = state => {
     return {
-        actualSheet: state.sheet.actualSheet
+        actualSheetInfo: state.sheet.actualSheetInfo
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateSheet: (id, data) => dispatch(updateSheet(id, data)),
+        updateSheetInfo: (id, data) => dispatch(updateSheetInfo(id, data)),
         getSheetDetail: id => dispatch(getSheetDetail(id))
     };
 };

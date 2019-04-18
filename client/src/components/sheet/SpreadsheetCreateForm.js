@@ -11,7 +11,7 @@ const SpreadsheetCreateForm = ({history, createSheet}) => {
         history.push("/");
     }
     return (
-        <div className="shh-form">
+        <div className="shh-form container">
             <form onSubmit={handleSubmit}>
                 <div className="input-field">
                     <input placeholder="Name" value={name} name="name" type="text" onChange={e => setName(e.target.value)} />

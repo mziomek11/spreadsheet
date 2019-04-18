@@ -8,14 +8,14 @@ const SpreadsheetList = ({getSheets, deleteSheet, sheets}) => {
         getSheets();
     }, []);
     return (
-        <div className="ssh-list">
+        <div className="ssh-list container">
             <ul className="collection with-header">
                 <li className="collection-header">Your sheets</li>
                 {sheets.map(({_id, name, date}) => (
                     <li className="collection-item" key={_id}>
                         <Link to={`/sheet/${_id}`}>{name}</Link>
                         <button className="secondary-content btn btn-small red" onClick={() => deleteSheet(_id)}>Delete</button>
-                        <Link to={`/sheet/${_id}`} className="secondary-content btn btn-small blue" style={{marginRight: "7px"}}>Update</Link>
+                        <Link to={`/sheet/${_id}/info/update`} className="secondary-content btn btn-small blue" style={{marginRight: "7px"}}>Update</Link>
                         <p>Created at {date}</p>
                     </li>
                 ))}

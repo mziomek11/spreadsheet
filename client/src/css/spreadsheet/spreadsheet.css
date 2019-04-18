@@ -1,0 +1,125 @@
+* {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+.spreadsheet div.toolbar {
+  width: 100%;
+  height: 64px;
+  position: fixed;
+  background: #283593;
+  top: 0;
+  z-index: 10;
+}
+
+.spreadsheet div.border-top {
+  position: absolute;
+  top: 64px;
+  left: 30px;
+  border-bottom: 1px solid black;
+}
+
+.spreadsheet div.border-left {
+  position: absolute;
+  top: 94px;
+  border-right: 1px solid black;
+}
+
+.spreadsheet div.border-corner {
+  position: fixed;
+  background: #000;
+  width: 30px;
+  height: 30px;
+  top: 64px;
+  z-index: 10;
+}
+
+.spreadsheet div.table {
+  margin-top: 94px;
+  margin-left: 30px;
+}
+
+.spreadsheet div.table-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.spreadsheet textarea {
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  resize: none;
+  overflow: hidden;
+  border: none;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.spreadsheet div.table-element {
+  height: 30px;
+  width: 150px;
+}
+
+.spreadsheet div.border-top-element, .spreadsheet div.border-left-element {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.spreadsheet div.border-top-element h6, .spreadsheet div.border-left-element h6 {
+  margin: 0;
+  padding: 0;
+}
+
+.spreadsheet div.border-left-element {
+  height: 30px;
+  width: 30px;
+  background: yellow;
+  border-bottom: 1px solid black;
+}
+
+.spreadsheet div.border-top-element {
+  height: 30px;
+  width: 150px;
+  background: grey;
+  border-right: 1px solid black;
+}
+
+.spreadsheet button {
+  position: fixed;
+  z-index: 5;
+}
+
+.spreadsheet button:focus {
+  outline: none;
+}
+
+.spreadsheet .up, .spreadsheet .down {
+  right: 0;
+  top: 0;
+  height: 50vh;
+  width: 60px !important;
+}
+
+.spreadsheet .down {
+  top: 50vh;
+}
+
+.spreadsheet .left, .spreadsheet .right {
+  left: 0;
+  bottom: 0;
+  width: 50vw;
+  height: 60px !important;
+}
+
+.spreadsheet .right {
+  left: 50vw;
+}
+/*# sourceMappingURL=spreadsheet.css.map */

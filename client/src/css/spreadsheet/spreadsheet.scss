@@ -1,0 +1,117 @@
+$corner_size: 30px;
+$button_size: 60px;
+$toolbar_height: 64px;
+$table_element_width: 150px;
+$table_element_height: 30px;
+$border: 1px solid black;
+
+* {
+    box-sizing: border-box;
+}
+
+.spreadsheet {
+    div.toolbar {
+        width: 100%;
+        height: $toolbar_height;
+        position: fixed;
+        background: #283593;
+        top: 0;
+        z-index: 10;
+    }
+    div.border-top {
+        position: absolute;
+        top: $toolbar_height;
+        left: $corner_size;
+        border-bottom: $border;
+    }
+    div.border-left {
+        position: absolute;
+        top: $corner_size + $toolbar_height;
+        border-right: $border;
+    }
+    div.border-corner {
+        position: fixed;
+        background: #000;
+        width: $corner_size;
+        height: $corner_size;
+        top: $toolbar_height;
+        z-index: 10;
+    }
+    div.table {
+        margin-top: $corner_size + $toolbar_height;
+        margin-left: $corner_size;
+    }
+    div.table-row {
+        display: flex;
+    }
+    textarea {
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        resize: none;
+        overflow: hidden;
+        border: none;
+        border-right: $border;
+        border-bottom: $border;
+    }
+    
+    div.table-element{
+        height: $table_element_height;
+        width: $table_element_width;
+    }
+
+    div.border-top-element, div.border-left-element {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        h6 {
+            margin: 0;
+            padding: 0;
+        }
+    }
+
+    div.border-left-element {
+        height: $table_element_height;
+        width: $corner_size;
+        background: yellow;
+        border-bottom: $border;
+    }
+
+    div.border-top-element {
+        height: $corner_size;
+        width: $table_element_width;
+        background: grey;
+        border-right: $border;
+    }
+
+    button {
+        position: fixed;
+        z-index: 5;
+    }
+
+    button:focus {
+        outline: none;
+    }
+
+    .up, .down {
+        right: 0;
+        top: 0;
+        height: 50vh;
+        width: $button_size !important;
+    }
+    .down {
+        top: 50vh;
+    }
+
+    .left, .right {
+        left: 0;
+        bottom: 0;
+        width: 50vw;
+        height: $button_size !important;
+    }
+
+    .right {
+        left: 50vw;
+    }
+}

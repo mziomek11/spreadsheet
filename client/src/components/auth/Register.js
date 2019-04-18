@@ -21,7 +21,7 @@ const Register = ({register, isAuthenticated}) => {
         return <Redirect to="/"/>
     }
     return (
-        <div className="register">
+        <div className="register container">
             <form onSubmit={handleSubmit}>
                 <div className="input-field">
                     <input placeholder="Username" value={username} type="text" onChange={e => setUsername(e.target.value)} />
