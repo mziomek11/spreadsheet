@@ -1,8 +1,5 @@
-$corner_size: 30px;
 $button_size: 60px;
-$toolbar_height: 64px;
-$table_element_width: 150px;
-$table_element_height: 30px;
+$resizer_size: 10px;
 $border: 1px solid black;
 
 * {
@@ -12,38 +9,32 @@ $border: 1px solid black;
 .spreadsheet {
     div.toolbar {
         width: 100%;
-        height: $toolbar_height;
         position: fixed;
         background: #283593;
         top: 0;
         z-index: 10;
     }
+
     div.border-top {
         position: absolute;
-        top: $toolbar_height;
-        left: $corner_size;
         border-bottom: $border;
     }
+
     div.border-left {
         position: absolute;
-        top: $corner_size + $toolbar_height;
         border-right: $border;
     }
+
     div.border-corner {
         position: fixed;
         background: #000;
-        width: $corner_size;
-        height: $corner_size;
-        top: $toolbar_height;
         z-index: 10;
     }
-    div.table {
-        margin-top: $corner_size + $toolbar_height;
-        margin-left: $corner_size;
-    }
+
     div.table-row {
         display: flex;
     }
+
     textarea {
         width: 100%;
         height: 100%;
@@ -54,11 +45,6 @@ $border: 1px solid black;
         border-right: $border;
         border-bottom: $border;
     }
-    
-    div.table-element{
-        height: $table_element_height;
-        width: $table_element_width;
-    }
 
     div.border-top-element, div.border-left-element {
         display: flex;
@@ -68,26 +54,53 @@ $border: 1px solid black;
         h6 {
             margin: 0;
             padding: 0;
+            user-select: none;
         }
     }
 
-    div.border-left-element {
-        height: $table_element_height;
-        width: $corner_size;
-        background: yellow;
+    %border-element {
+        position: relative;
+        overflow: visible;
         border-bottom: $border;
     }
 
+    %border-resizer {
+        position: absolute;
+        background: black;
+        z-index: 10;
+        cursor: move;
+    }
+
+    div.border-left-element {
+        @extend %border-element;
+        background: yellow;
+     
+        .resizer {
+            @extend %border-resizer;
+            bottom: 0;
+            width: 100%;
+            height: $resizer_size;
+            transform: translateY($resizer_size / 2);
+        }
+    }
+
     div.border-top-element {
-        height: $corner_size;
-        width: $table_element_width;
+        @extend %border-element;
         background: grey;
-        border-right: $border;
+
+        .resizer {
+            @extend %border-resizer;
+            right: 0;
+            height: 100%;
+            width: $resizer_size;
+            transform: translateX($resizer_size / 2);
+        }
     }
 
     button {
         position: fixed;
-        z-index: 5;
+        z-index: 20;
+        user-select: none;
     }
 
     button:focus {
@@ -100,6 +113,7 @@ $border: 1px solid black;
         height: 50vh;
         width: $button_size !important;
     }
+    
     .down {
         top: 50vh;
     }

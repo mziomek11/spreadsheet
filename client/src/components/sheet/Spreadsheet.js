@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {setIsInSheet, resizeSheet} from "../../store/actions/sheetActions";
+import {DEFAUTLT_CELL_WIDTH, DEFAUTLT_CELL_HEIGHT} from "../../config";
 import Toolbar from "../headers/Toolbar";
 import Border from "./border/Border";
 import Table from "./table/Table";
@@ -18,8 +19,8 @@ class Spreadsheet extends Component{
     }
     componentDidMount(){
         //window.addEventListener("scroll", this.handleScroll);
-        const rowsInWindow = Math.ceil((window.innerHeight - 64 - 30) / 30);
-        const colsInWindow = Math.ceil((window.innerWidth - 30) / 150);
+        const rowsInWindow = Math.ceil((window.innerHeight - 64 - 30) / DEFAUTLT_CELL_HEIGHT);
+        const colsInWindow = Math.ceil((window.innerWidth - 30) / DEFAUTLT_CELL_WIDTH);
         this.setState({
             endRow: rowsInWindow,
             endCol: colsInWindow,

@@ -5,7 +5,6 @@
 
 .spreadsheet div.toolbar {
   width: 100%;
-  height: 64px;
   position: fixed;
   background: #283593;
   top: 0;
@@ -14,29 +13,18 @@
 
 .spreadsheet div.border-top {
   position: absolute;
-  top: 64px;
-  left: 30px;
   border-bottom: 1px solid black;
 }
 
 .spreadsheet div.border-left {
   position: absolute;
-  top: 94px;
   border-right: 1px solid black;
 }
 
 .spreadsheet div.border-corner {
   position: fixed;
   background: #000;
-  width: 30px;
-  height: 30px;
-  top: 64px;
   z-index: 10;
-}
-
-.spreadsheet div.table {
-  margin-top: 94px;
-  margin-left: 30px;
 }
 
 .spreadsheet div.table-row {
@@ -56,11 +44,6 @@
   border-bottom: 1px solid black;
 }
 
-.spreadsheet div.table-element {
-  height: 30px;
-  width: 150px;
-}
-
 .spreadsheet div.border-top-element, .spreadsheet div.border-left-element {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -76,25 +59,56 @@
 .spreadsheet div.border-top-element h6, .spreadsheet div.border-left-element h6 {
   margin: 0;
   padding: 0;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
-.spreadsheet div.border-left-element {
-  height: 30px;
-  width: 30px;
-  background: yellow;
+.spreadsheet div.border-left-element, .spreadsheet div.border-top-element {
+  position: relative;
+  overflow: visible;
   border-bottom: 1px solid black;
 }
 
+.spreadsheet div.border-left-element .resizer, .spreadsheet div.border-top-element .resizer {
+  position: absolute;
+  background: black;
+  z-index: 10;
+  cursor: move;
+}
+
+.spreadsheet div.border-left-element {
+  background: yellow;
+}
+
+.spreadsheet div.border-left-element .resizer {
+  bottom: 0;
+  width: 100%;
+  height: 10px;
+  -webkit-transform: translateY(5px);
+          transform: translateY(5px);
+}
+
 .spreadsheet div.border-top-element {
-  height: 30px;
-  width: 150px;
   background: grey;
-  border-right: 1px solid black;
+}
+
+.spreadsheet div.border-top-element .resizer {
+  right: 0;
+  height: 100%;
+  width: 10px;
+  -webkit-transform: translateX(5px);
+          transform: translateX(5px);
 }
 
 .spreadsheet button {
   position: fixed;
-  z-index: 5;
+  z-index: 20;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
 }
 
 .spreadsheet button:focus {
