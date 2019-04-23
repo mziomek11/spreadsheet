@@ -32,10 +32,15 @@ export const createSheet = data => (dispatch, getState) => {
 
 export const updateSheetInfo = (id, data) => (dispatch, getState) => {
     axios.put(`/api/spreadsheet/${id}/update`, data, tokenConfig(getState))
-    .then(res => dispatch({
-        type: SheetActions.UPDATE_SHEET_INFO,
-        payload: { data, _id: id }
-    }))
+    .then(res => {
+        const newSheets = [...getState().sheet.sheets];
+        const updateIndex = newSheets.findIndex(x => x._id === id);
+        newSheets[updateIndex] = {...newSheets[updateIndex], ...data};
+        dispatch({
+            type: SheetActions.UPDATE_SHEET_INFO,
+            payload: newSheets
+        });
+    })
     .catch(err => dispatch(errorAction(err)));
 };
 
@@ -80,23 +85,24 @@ export const resizeSheet = (cols, rows) => (dispatch, getState) => {
     });
 };
 
-export const updateTableCell = (col, row, text) => {
-    return {
+export const updateTableCell = (col, row, text) => (dispatch, getState) => {
+    const newTable = [...getState().sheet.actualSheet.table];
+    newTable[row] = newTable[row].map((x, index) => index === col ? text : x);
+    dispatch({
         type: SheetActions.UPDATE_TABLE_CELL,
-        payload: {
-            col, row, text
-        }
-    };
+        payload: newTable
+    });
 };
 
 export const resizeSheetBorder = (index, size, isCol) => (dispatch, getState) => {
     const newBorder = [...getState().sheet.actualSheet[isCol ? "borderTop" : "borderLeft"]]
+    const secondBorder = [...getState().sheet.actualSheet[!isCol ? "borderTop" : "borderLeft"]]
     newBorder[index] = size;
     dispatch({
         type: SheetActions.RESIZE_SHEET_BORDER,
         payload: {
-            border: newBorder,
-            isCol
+            borderTop: isCol ? newBorder : secondBorder,
+            borderLeft: isCol ? secondBorder : newBorder
         }
     });
 };

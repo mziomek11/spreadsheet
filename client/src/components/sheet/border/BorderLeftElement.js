@@ -9,8 +9,9 @@ const BorderLeftElement = ({index, height, startMouseY, resizeSheetBorder}) => {
         window.addEventListener("mouseup", handleMouseUp);
     }
     const handleResizeMove = e => {
-        if(e.clientY - startMouseY > MIN_CELL_SIZE)
-            resizeSheetBorder(index, e.clientY - startMouseY);
+        const wantedSize = e.clientY - startMouseY;
+        const newSize = wantedSize > MIN_CELL_SIZE ? wantedSize : MIN_CELL_SIZE;
+        resizeSheetBorder(index, newSize);
     }
     const handleMouseUp = () => {
         window.removeEventListener("mousemove", handleResizeMove);

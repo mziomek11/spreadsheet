@@ -1,7 +1,8 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {setIsInSheet, resizeSheet} from "../../store/actions/sheetActions";
-import {DEFAUTLT_CELL_WIDTH, DEFAUTLT_CELL_HEIGHT} from "../../config";
+import {sumElements} from "../../helpers/arrayHelpers";
+import {DEFAUTLT_CELL_WIDTH, DEFAUTLT_CELL_HEIGHT, TOOLBAR_HEIGHT, CELLS_PER_WHEEL, CORNER_SIZE} from "../../config";
 import Toolbar from "../headers/Toolbar";
 import Border from "./border/Border";
 import Table from "./table/Table";
@@ -15,12 +16,23 @@ class Spreadsheet extends Component{
         endRow: 0,
         startCol: 0,
         endCol: 0,
-        lastScrollY: 0
+        lastScrollY: 0,
+        lastScrollX: 0
     }
     componentDidMount(){
-        //window.addEventListener("scroll", this.handleScroll);
-        const rowsInWindow = Math.ceil((window.innerHeight - 64 - 30) / DEFAUTLT_CELL_HEIGHT);
-        const colsInWindow = Math.ceil((window.innerWidth - 30) / DEFAUTLT_CELL_WIDTH);
+        window.addEventListener("scroll", this.handleScroll);
+        window.addEventListener("wheel", this.handleWheel);
+        window.scrollTo(0, 0);
+        this.calculateRowsAndCols();
+    }
+    componentWillUnmount(){
+        window.removeEventListener("scroll", this.handleScroll);
+        window.removeEventListener("wheel", this.handleWheel);
+        this.props.setIsInSheet(false);
+    }
+    calculateRowsAndCols(){
+        const rowsInWindow = Math.ceil((window.innerHeight - TOOLBAR_HEIGHT - CORNER_SIZE) / DEFAUTLT_CELL_HEIGHT);
+        const colsInWindow = Math.ceil((window.innerWidth - CORNER_SIZE) / DEFAUTLT_CELL_WIDTH);
         this.setState({
             endRow: rowsInWindow,
             endCol: colsInWindow,
@@ -30,85 +42,70 @@ class Spreadsheet extends Component{
         this.props.resizeSheet(colsInWindow, rowsInWindow, true);
         this.props.setIsInSheet(true);
     }
-    componentWillUnmount(){
-        //window.removeEventListener("scroll", this.handleScroll);
-        this.props.setIsInSheet(false);
-    }
-    handleUpButton = () => {
-        if(this.state.startRow >= 3){
-            this.setState({
-                startRow: this.state.startRow - 3,
-                endRow: this.state.endRow - 3,
-            });
+    handleWheel = e => {
+        e.preventDefault();
+        const {rows, startRow, endRow, cols, lastScrollY, lastScrollX} = this.state;
+        const {borderLeft, resizeSheet} = this.props;
+        let newRows = rows, newStartRow = startRow, newEndRow = endRow;
+        let scrollAmout = 0;
+
+        if(e.deltaY < 0){
+            if(startRow >= CELLS_PER_WHEEL){
+                scrollAmout = -sumElements(borderLeft, startRow, CELLS_PER_WHEEL);
+                newStartRow -= CELLS_PER_WHEEL;
+                newEndRow -= CELLS_PER_WHEEL;
+            }
+        } else{
+            scrollAmout = sumElements(borderLeft, endRow - CELLS_PER_WHEEL, CELLS_PER_WHEEL)
+            newStartRow += CELLS_PER_WHEEL;
+            newEndRow += CELLS_PER_WHEEL;
+            if(newEndRow > rows){
+                newRows += CELLS_PER_WHEEL;
+                resizeSheet(cols, newEndRow);
+            }
         }
-    }
-    handleDownButton = () => {
+        window.scrollTo(lastScrollX, lastScrollY + scrollAmout);
         this.setState({
-            startRow: this.state.startRow + 3,
-            endRow: this.state.endRow + 3,
-            rows: (this.state.endRow + 3 > this.state.rows ? this.state.endRow + 3 : this.state.rows)
-        })
-        if(this.state.endRow + 3 > this.state.rows){
-            this.props.resizeSheet(this.state.cols, this.state.endRow + 3);
-        }
-    }
-    handleLeftButton = () => {
-        if(this.state.startCol >= 3){
-            this.setState({
-                startCol: this.state.startCol - 3,
-                endCol: this.state.endCol - 3,
-            })
-        }
-    }
-    handleRightButton = () => {
-        this.setState({
-            startCol: this.state.startCol + 3,
-            endCol: this.state.endCol + 3,
-            cols: (this.state.endCol + 3 > this.state.cols ? this.state.endCol + 3 : this.state.cols)
+            rows: newRows,
+            startRow: newStartRow,
+            endRow: newEndRow,
+            lastScrollY: window.scrollY,
         });
-        if(this.state.endCol + 3 > this.state.cols){
-            this.props.resizeSheet(this.state.endCol + 3, this.state.rows);
-        }
     }
     handleScroll = e => {
-        // const addAmout = 20;
-        // const D = document;
-        // const height = Math.max(
-        //     D.body.scrollHeight, D.documentElement.scrollHeight,
-        //     D.body.offsetHeight, D.documentElement.offsetHeight,
-        //     D.body.clientHeight, D.documentElement.clientHeight
-        // );
-        // const width = Math.max(
-        //     D.body.scrollWidth, D.documentElement.scrollWidth,
-        //     D.body.offsetWidth, D.documentElement.offsetWidth,
-        //     D.body.clientWidth, D.documentElement.clientWidth
-        // )
-        // const {scrollTop, scrollLeft} = e.target.scrollingElement;
-        // const {rows, cols, startRow, startCol, endRow, endCol, lastScrollY} = this.state;
-        // let setRows = false, setCols = false, scrolledDown = true;
-        // const newRows = (scrollTop + window.innerHeight + 300 > height ? rows + addAmout : rows);
-        // const newCols = (scrollTop + window.innerWidth + 300 > width ? cols + addAmout : cols);
+        // const {rows, cols, startRow, startCol, endRow, endCol, lastScrollY, lastScrollX, lastScrollAmout} = this.state;
+        // let newRows = rows;
+        // let newCols = cols;
         // let newStartRow = startRow, newStartCol = startCol, newEndRow = endRow, newEndCol = endCol;
+
+        // const {borderLeft} = this.props;
+        // let scrollAmout = 0;
         // if(window.scrollY < lastScrollY){
-        //     console.log("gora")
-        //     if(startRow >= 3){
-        //         newStartRow -= 3;
-        //         newEndRow -= 3;
-        //     }
-        // } else if (window.scrollY > lastScrollY){
-        //     console.log("dol")
+        //     scrollAmout = -(borderLeft[startRow] + borderLeft[startRow + 1] + borderLeft[startRow + 2]);
+        //     newStartRow -= 3;
+        //     newEndRow -= 3;
+        // }else if (window.scrollY  > lastScrollY){
         //     newStartRow += 3;
         //     newEndRow += 3;
+        //     scrollAmout = borderLeft[endRow - 1] + borderLeft[endRow - 2] + borderLeft[endRow - 3];
+        //     if(newEndRow > rows){
+        //         newRows += 3;
+        //         this.props.resizeSheet(cols, newEndRow);
+        //     }
         // }
-        // console.log(newStartRow);
-        // console.log(newEndRow);
-        // this.setState({
-        //     rows: newRows,
-        //     cols: newCols,
-        //     startRow: newStartRow,
-        //     endRow: newEndRow,
-        //     lastScrollY: window.scrollY
-        // });
+        // if(scrollAmout !== 0){
+        //     console.log(lastScrollY + scrollAmout)
+        //     window.scrollTo(lastScrollX, Math.max(0, lastScrollY + scrollAmout));
+        //     this.setState({
+        //         rows: newRows,
+        //         cols: newCols,
+        //         startRow: newStartRow,
+        //         endRow: newEndRow,
+        //         lastScrollY: window.scrollY,
+        //         lastScrollX: window.scrollX,
+        //         lastScrollAmout: scrollAmout
+        //     });
+        // }
     }
     render(){
         if(!this.props.isInSheet){
@@ -116,24 +113,23 @@ class Spreadsheet extends Component{
         }
 
         return (
-            <div className="spreadsheet">
+            <div className="spreadsheet" style={{
+                top: this.state.lastScrollY + TOOLBAR_HEIGHT,
+                height: window.innerHeight + 100
+            }}>
                 <Toolbar />
-                {/* <Border cols={this.state.cols} rows={this.state.rows} />
-                <Table cols={this.state.cols} rows={this.state.rows} /> */}
-                <Border startRow={this.state.startRow} endRow={this.state.endRow} startCol={this.state.startCol} endCol={this.state.endCol} />
-                <Table startRow={this.state.startRow} endRow={this.state.endRow} startCol={this.state.startCol} endCol={this.state.endCol} />
-                <button className="up" onClick={this.handleUpButton}>
-                    <i className="small material-icons">arrow_upward</i>
-                </button>
-                <button className="down" onClick={this.handleDownButton}>
-                    <i className="small material-icons">arrow_downward</i>
-                </button>
-                <button className="left" onClick={this.handleLeftButton}>
-                    <i className="small material-icons">arrow_back</i>
-                </button>
-                <button className="right" onClick={this.handleRightButton}>
-                    <i className="small material-icons">arrow_forward</i>
-                </button>
+                <Border 
+                    startRow={this.state.startRow} 
+                    endRow={this.state.endRow} 
+                    startCol={this.state.startCol} 
+                    endCol={this.state.endCol}
+                />
+                <Table
+                    startRow={this.state.startRow} 
+                    endRow={this.state.endRow} 
+                    startCol={this.state.startCol} 
+                    endCol={this.state.endCol} 
+                />
             </div>
         )
     }
@@ -141,7 +137,9 @@ class Spreadsheet extends Component{
 
 const mapStateToProps = state => {
     return {
-        isInSheet: state.sheet.isInSheet
+        isInSheet: state.sheet.isInSheet,
+        borderTop: state.sheet.actualSheet.borderTop,
+        borderLeft: state.sheet.actualSheet.borderLeft
     }
 }
 

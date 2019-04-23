@@ -20,10 +20,7 @@ const sheetReducer = (state=initState, action) => {
         case SheetActions.DELETE_SHEET:
             return {...state, sheets: state.sheets.filter(sheet => sheet._id !== action.payload)};
         case SheetActions.UPDATE_SHEET_INFO:
-            const newSheets = [...state.sheets];
-            const updateIndex = newSheets.findIndex(x => x._id === action.payload._id);
-            newSheets[updateIndex] = {...newSheets[updateIndex], ...action.payload.data};
-            return {...state, sheets: newSheets};
+            return {...state, sheets: action.payload};
         case SheetActions.CREATE_SHEET:
             return {...state, sheets: [...state.sheets, action.payload], actualSheetInfo: null};
         case SheetActions.SET_IS_IN_SHEET:
@@ -31,32 +28,26 @@ const sheetReducer = (state=initState, action) => {
         case SheetActions.RESIZE_SHEET:
             return {...state, actualSheet: action.payload};
         case SheetActions.UPDATE_TABLE_CELL:
-            const updatedTable = [...state.actualSheet.table];
-            updatedTable[action.payload.row] = updatedTable[action.payload.row].map((x, index) => index === action.payload.col ? action.payload.text : x);
-            return {...state, actualSheet: {
-                ...state.actualSheet,
-                table: updatedTable
-            }};
-        case SheetActions.RESIZE_SHEET_BORDER:
-            if(action.payload.isCol)
-                return {
-                    ...state, 
-                    actualSheet: {
-                        ...state.actualSheet, 
-                        borderTop: action.payload.border
-                    }
+            return {
+                ...state, 
+                actualSheet: {
+                    ...state.actualSheet,
+                    table: action.payload
                 }
+            };
+        case SheetActions.RESIZE_SHEET_BORDER:
             return {
                 ...state, 
                 actualSheet: {
                     ...state.actualSheet, 
-                    borderLeft: action.payload.border
+                    borderTop: action.payload.borderTop,
+                    borderLeft: action.payload.borderLeft
                 }
             }
         case AuthActions.LOGOUT_SUCCESS:
-            return initState;
+            return {...initState};
         default:
-            return state;
+            return {...state};
     }
 }
 

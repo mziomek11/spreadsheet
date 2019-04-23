@@ -1,12 +1,11 @@
 import React from "react";
 import BorderTopElement from "./BorderTopElement";
 import {connect} from "react-redux";
-import {CORNER_SIZE, TOOLBAR_HEIGHT} from "../../../config";
+import {CORNER_SIZE} from "../../../config";
 
-const BorderTop = ({size, scrollTop, startCol, endCol, borderWidths}) => {
+const BorderTop = ({startCol, endCol, borderWidths}) => {
     const elements = [];
     let startMouseX = CORNER_SIZE;
-    //const elements = new Array(size).fill().map((x, i) => <BorderTopElement index={i} key={i}/>);
     for(let col = startCol; col < endCol; col++){
         const elementWidth = borderWidths[col];
         elements.push(<BorderTopElement 
@@ -19,17 +18,11 @@ const BorderTop = ({size, scrollTop, startCol, endCol, borderWidths}) => {
     }
     return (
         <div className="table-row border-top" style={{
-            top: TOOLBAR_HEIGHT,
             left: CORNER_SIZE
         }}>
             {elements}
         </div>
     );
-    // return (
-    //     <div className="table-row border-top" style={{top: (64 + scrollTop) + "px" }}>
-    //         {elements}
-    //     </div>
-    // );
 };
 
 const mapStateToProps = state => {

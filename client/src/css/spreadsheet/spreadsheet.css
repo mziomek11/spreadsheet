@@ -3,6 +3,10 @@
           box-sizing: border-box;
 }
 
+.spreadsheet {
+  position: absolute;
+}
+
 .spreadsheet div.toolbar {
   width: 100%;
   position: fixed;
@@ -100,40 +104,5 @@
   width: 10px;
   -webkit-transform: translateX(5px);
           transform: translateX(5px);
-}
-
-.spreadsheet button {
-  position: fixed;
-  z-index: 20;
-  -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
-}
-
-.spreadsheet button:focus {
-  outline: none;
-}
-
-.spreadsheet .up, .spreadsheet .down {
-  right: 0;
-  top: 0;
-  height: 50vh;
-  width: 60px !important;
-}
-
-.spreadsheet .down {
-  top: 50vh;
-}
-
-.spreadsheet .left, .spreadsheet .right {
-  left: 0;
-  bottom: 0;
-  width: 50vw;
-  height: 60px !important;
-}
-
-.spreadsheet .right {
-  left: 50vw;
 }
 /*# sourceMappingURL=spreadsheet.css.map */

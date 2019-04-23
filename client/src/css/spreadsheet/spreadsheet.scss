@@ -7,6 +7,8 @@ $border: 1px solid black;
 }
 
 .spreadsheet {
+    position: absolute;
+
     div.toolbar {
         width: 100%;
         position: fixed;
@@ -95,37 +97,5 @@ $border: 1px solid black;
             width: $resizer_size;
             transform: translateX($resizer_size / 2);
         }
-    }
-
-    button {
-        position: fixed;
-        z-index: 20;
-        user-select: none;
-    }
-
-    button:focus {
-        outline: none;
-    }
-
-    .up, .down {
-        right: 0;
-        top: 0;
-        height: 50vh;
-        width: $button_size !important;
-    }
-    
-    .down {
-        top: 50vh;
-    }
-
-    .left, .right {
-        left: 0;
-        bottom: 0;
-        width: 50vw;
-        height: $button_size !important;
-    }
-
-    .right {
-        left: 50vw;
     }
 }

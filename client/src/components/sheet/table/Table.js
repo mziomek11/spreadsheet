@@ -1,9 +1,15 @@
 import React from "react";
+import TableRow from "./TableRow";
 import TableElement from "./TableElement";
 import {connect} from "react-redux";
-import {CORNER_SIZE, TOOLBAR_HEIGHT} from "../../../config";
+import {CORNER_SIZE} from "../../../config";
 
-const Table = ({rows, cols, startRow, endRow, startCol, endCol, actualTable, borderHeigts, borderWidths}) => {
+const tableStyle = {
+    marginTop: CORNER_SIZE,
+    marginLeft: CORNER_SIZE
+}
+
+const Table = ({startRow, endRow, startCol, endCol, actualTable, borderHeigts, borderWidths}) => {
     const table = [];
     for(let row = 0; row < endRow - startRow; row++){
         table.push([])
@@ -19,23 +25,14 @@ const Table = ({rows, cols, startRow, endRow, startCol, endCol, actualTable, bor
             )
         }
     }
-    const jsxDivTable = (
-        <div className="table" style={{
-            marginTop: CORNER_SIZE + TOOLBAR_HEIGHT,
-            marginLeft: CORNER_SIZE
-        }}>
-            {table.map((row, rowIndex) => (
-                <div key={rowIndex} className="table-row">
-                    {table[rowIndex].map((col, colIndex) => (
-                        <div key={rowIndex + " " + colIndex}>{col}</div>
-                    ))}
-                </div>
-            ))}
-        </div>
-    )
+
     return (
         <div>
-            {jsxDivTable}
+            <div className="table" style={tableStyle}>
+                {table.map((row, rowIndex) => (
+                    <TableRow key={rowIndex} elements={table[rowIndex]} index={rowIndex} />
+                ))}
+            </div>
         </div>
     );
 };
