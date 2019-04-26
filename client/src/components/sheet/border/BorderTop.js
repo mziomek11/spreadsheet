@@ -3,7 +3,7 @@ import BorderTopElement from "./BorderTopElement";
 import {connect} from "react-redux";
 import {CORNER_SIZE} from "../../../config";
 
-const BorderTop = ({startCol, endCol, borderWidths}) => {
+const BorderTop = ({startCol, endCol, borderWidths, scrollX}) => {
     const elements = [];
     let startMouseX = CORNER_SIZE;
     for(let col = startCol; col < endCol; col++){
@@ -18,7 +18,7 @@ const BorderTop = ({startCol, endCol, borderWidths}) => {
     }
     return (
         <div className="table-row border-top" style={{
-            left: CORNER_SIZE
+            left: CORNER_SIZE + scrollX
         }}>
             {elements}
         </div>

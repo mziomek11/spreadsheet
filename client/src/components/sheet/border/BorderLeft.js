@@ -3,7 +3,7 @@ import BorderLeftElement from "./BorderLeftElement";
 import {connect} from "react-redux";
 import {CORNER_SIZE, TOOLBAR_HEIGHT} from "../../../config";
 
-const BorderLeft = ({startRow, endRow, borderHeigts}) => {
+const BorderLeft = ({startRow, endRow, borderHeigts, scrollX}) => {
     const elements = [];
     let startMouseY = CORNER_SIZE + TOOLBAR_HEIGHT;
     for(let row = startRow; row < endRow; row++){
@@ -18,7 +18,8 @@ const BorderLeft = ({startRow, endRow, borderHeigts}) => {
     }
     return (
         <div className="border-left" style={{
-            top: CORNER_SIZE
+            top: CORNER_SIZE,
+            left: scrollX
         }}>
             {elements}
         </div>

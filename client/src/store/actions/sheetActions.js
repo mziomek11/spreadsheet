@@ -102,10 +102,24 @@ export const resizeSheetBorder = (index, size, isCol) => (dispatch, getState) =>
         type: SheetActions.RESIZE_SHEET_BORDER,
         payload: {
             borderTop: isCol ? newBorder : secondBorder,
-            borderLeft: isCol ? secondBorder : newBorder
+            borderLeft: isCol ? secondBorder : newBorder,
+            borderResized: true,
+            topResized: isCol,
+            leftResized: !isCol
         }
     });
 };
+
+export const makeBorderResizedFalse = () => {
+    return {
+        type: SheetActions.MAKE_BORDER_RESIZED_FALSE,
+        payload: {
+            borderResized: false,
+            topResized: false,
+            leftResized: false
+        }
+    }
+}
 
 const errorAction = err => {
     return {

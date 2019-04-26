@@ -6,7 +6,10 @@ const initState = {
     actualSheet: {
         borderTop: [],
         borderLeft: [],
-        table: []
+        table: [],
+        borderResized: false,
+        topResized: false,
+        leftResized: false
     },
     isInSheet: false
 }
@@ -40,8 +43,15 @@ const sheetReducer = (state=initState, action) => {
                 ...state, 
                 actualSheet: {
                     ...state.actualSheet, 
-                    borderTop: action.payload.borderTop,
-                    borderLeft: action.payload.borderLeft
+                    ...action.payload
+                }
+            };
+        case SheetActions.MAKE_BORDER_RESIZED_FALSE:
+            return {
+                ...state,
+                actualSheet: {
+                    ...state.actualSheet,
+                    ...action.payload
                 }
             }
         case AuthActions.LOGOUT_SUCCESS:
