@@ -16,7 +16,7 @@ const Table = ({startRow, endRow, startCol, endCol, actualTable, borderHeigts, b
                         row={startRow + row}
                         width={borderWidths[startCol + col]}
                         height={borderHeigts[startRow + row]}
-                        text={actualTable[startRow + row][startCol + col]}
+                        data={actualTable[startRow + row][startCol + col]}
                     />
                 )
             }

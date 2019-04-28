@@ -2,7 +2,7 @@ import axios from "axios";
 import {SheetActions, ErrorActions} from "./actionTypes";
 import {tokenConfig} from "./authActions";
 import {getFilledArray, getNestedFilledArray} from "../../helpers/arrayHelpers";
-import {DEFAUTLT_CELL_WIDTH, DEFAUTLT_CELL_HEIGHT} from "../../config";
+import {DEFAUTLT_CELL_WIDTH, DEFAUTLT_CELL_HEIGHT, DEFAULT_CELL_DATA} from "../../config";
 
 export const getSheets = () => (dispatch, getState) => {
     axios.get("/api/spreadsheet", tokenConfig(getState))
@@ -64,14 +64,14 @@ export const resizeSheet = (cols, rows) => (dispatch, getState) => {
     const {table, borderTop, borderLeft} = getState().sheet.actualSheet;
     let newTable, newBorderTop, newBorderLeft;
     if(table.length === 0){
-        newTable = getNestedFilledArray(rows, cols, "");
+        newTable = getNestedFilledArray(rows, cols, DEFAULT_CELL_DATA);
         newBorderTop = getFilledArray(cols, DEFAUTLT_CELL_WIDTH);
         newBorderLeft = getFilledArray(rows, DEFAUTLT_CELL_HEIGHT);
     }else{
         const newRows = rows - table.length;
         const newCols = cols - table[0].length;
-        newTable = table.map(row => [...row, ...getFilledArray(newCols, "")]);
-        newTable = [...newTable, ...getNestedFilledArray(newRows, cols, "")];
+        newTable = table.map(row => [...row, ...getFilledArray(newCols, DEFAULT_CELL_DATA)]);
+        newTable = [...newTable, ...getNestedFilledArray(newRows, cols, DEFAULT_CELL_DATA)];
         newBorderTop = [...borderTop, ...getFilledArray(newCols, DEFAUTLT_CELL_WIDTH)];
         newBorderLeft = [...borderLeft, ...getFilledArray(newRows, DEFAUTLT_CELL_HEIGHT)];
     }
@@ -82,15 +82,6 @@ export const resizeSheet = (cols, rows) => (dispatch, getState) => {
             borderTop: newBorderTop,
             borderLeft: newBorderLeft
         }
-    });
-};
-
-export const updateTableCell = (col, row, text) => (dispatch, getState) => {
-    const newTable = [...getState().sheet.actualSheet.table];
-    newTable[row] = newTable[row].map((x, index) => index === col ? text : x);
-    dispatch({
-        type: SheetActions.UPDATE_TABLE_CELL,
-        payload: newTable
     });
 };
 
@@ -118,8 +109,37 @@ export const makeBorderResizedFalse = () => {
             topResized: false,
             leftResized: false
         }
+    };
+};
+
+export const setTableCell = (col, row) => {
+    return {
+        type: SheetActions.SET_TABLE_CELL,
+        payload: {
+            actualTableCell: {
+                col, row
+            }
+        }
+    };
+};
+
+export const updateTableCell = (col, row, property) => (dispatch, getState) => {
+    if(!row && !col && col !== 0 && row !== 0){
+        col = getState().sheet.actualSheet.actualTableCell.col;
+        row = getState().sheet.actualSheet.actualTableCell.row;
     }
-}
+    if(!row && !col && col !== 0 && row !== 0) return;
+    
+    const newTable = [...getState().sheet.actualSheet.table];
+    newTable[row] = newTable[row].map((element, index) => index === col ? {
+        ...element,
+        ...property
+    } : element);
+    dispatch({
+        type: SheetActions.UPDATE_TABLE_CELL,
+        payload: newTable
+    });
+};
 
 const errorAction = err => {
     return {

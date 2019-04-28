@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {setIsInSheet, resizeSheet, makeBorderResizedFalse} from "../../store/actions/sheetActions";
+import {setIsInSheet, resizeSheet, makeBorderResizedFalse, setTableCell} from "../../store/actions/sheetActions";
 import {DEFAUTLT_CELL_WIDTH, DEFAUTLT_CELL_HEIGHT, TOOLBAR_HEIGHT, CELLS_PER_WHEEL, CORNER_SIZE} from "../../config";
-import Toolbar from "../headers/Toolbar";
+import Toolbar from "../headers/toolbar/Toolbar";
 import Border from "./border/Border";
 import Table from "./table/Table";
 import "../../css/spreadsheet/spreadsheet.css";
@@ -172,6 +172,9 @@ class Spreadsheet extends Component{
         window.scrollTo(lastScrollX, height);
     };
     handleScroll = e => {
+        document.activeElement.blur();
+        this.props.setTableCell(null, null)
+
         if(this.state.abandonScrollEvent){
             this.setState({abandonScrollEvent: false});
             return;
@@ -286,7 +289,8 @@ const mapDispatchToProps = dispatch => {
     return {
         setIsInSheet: isInSheet => dispatch(setIsInSheet(isInSheet)),
         resizeSheet: (cols, rows, makeBigger) => dispatch(resizeSheet(cols, rows)),
-        makeBorderResizedFalse: () => dispatch(makeBorderResizedFalse())
+        makeBorderResizedFalse: () => dispatch(makeBorderResizedFalse()),
+        setTableCell: (col, row) => dispatch(setTableCell(col, row))
     }
 }
 

@@ -10,9 +10,46 @@
 .spreadsheet div.toolbar {
   width: 100%;
   position: fixed;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   background: #283593;
+  color: #fff;
+  padding: 0 20px;
   top: 0;
   z-index: 10;
+}
+
+.spreadsheet div.toolbar .options {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.spreadsheet div.toolbar .option {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  margin: 0 10px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.spreadsheet div.toolbar .option h4 {
+  margin: 0;
+}
+
+.spreadsheet div.toolbar .option:hover {
+  cursor: pointer;
+}
+
+.spreadsheet div.toolbar .option.selected {
+  background: red;
 }
 
 .spreadsheet div.border-top {

@@ -1,6 +1,7 @@
 $button_size: 60px;
 $resizer_size: 10px;
 $border: 1px solid black;
+$toolbar_padding: 20px;
 
 * {
     box-sizing: border-box;
@@ -12,9 +13,34 @@ $border: 1px solid black;
     div.toolbar {
         width: 100%;
         position: fixed;
+        display: flex;
         background: #283593;
+        color: #fff;
+        padding: 0 $toolbar_padding;
         top: 0;
         z-index: 10;
+
+        .options {
+            display: flex;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            margin: 0 $toolbar_padding / 2;
+            user-select: none;
+            h4 {
+                margin: 0;
+            }
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        .option.selected {
+            background: red;
+        }
     }
 
     div.border-top {

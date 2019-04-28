@@ -9,7 +9,11 @@ const initState = {
         table: [],
         borderResized: false,
         topResized: false,
-        leftResized: false
+        leftResized: false,
+        actualTableCell: {
+            col: null,
+            row: null
+        }
     },
     isInSheet: false
 }
@@ -30,14 +34,6 @@ const sheetReducer = (state=initState, action) => {
             return {...state, isInSheet: true};
         case SheetActions.RESIZE_SHEET:
             return {...state, actualSheet: action.payload};
-        case SheetActions.UPDATE_TABLE_CELL:
-            return {
-                ...state, 
-                actualSheet: {
-                    ...state.actualSheet,
-                    table: action.payload
-                }
-            };
         case SheetActions.RESIZE_SHEET_BORDER:
             return {
                 ...state, 
@@ -53,7 +49,23 @@ const sheetReducer = (state=initState, action) => {
                     ...state.actualSheet,
                     ...action.payload
                 }
-            }
+            };
+        case SheetActions.SET_TABLE_CELL:
+            return {
+                ...state,
+                actualSheet: {
+                    ...state.actualSheet,
+                    ...action.payload
+                }
+            };
+        case SheetActions.UPDATE_TABLE_CELL:
+            return {
+                ...state, 
+                actualSheet: {
+                    ...state.actualSheet,
+                    table: action.payload
+                }
+            };
         case AuthActions.LOGOUT_SUCCESS:
             return {...initState};
         default:
