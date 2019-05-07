@@ -2,7 +2,7 @@ import React, {useEffect} from "react";
 import {connect} from "react-redux";
 import {updateTableCell} from "../../../store/actions/sheetActions";
 
-const Aligment = ({table, actualTableCell, updateTableCell}) => {
+const VerticalAligmnent = ({table, actualTableCell, updateTableCell}) => {
     const container = React.createRef();
     
     useEffect(() => {
@@ -12,9 +12,9 @@ const Aligment = ({table, actualTableCell, updateTableCell}) => {
             return;
         }
         
-        const {align} = table[actualTableCell.row][actualTableCell.col];
+        const {valign} = table[actualTableCell.row][actualTableCell.col];
         container.current.childNodes.forEach(option => {
-            if(option.id !== `align-${align}`) option.classList.remove("selected");
+            if(option.id !== `valign-${valign}`) option.classList.remove("selected");
             else option.classList.add("selected");
         });
     }, [actualTableCell]);
@@ -28,20 +28,20 @@ const Aligment = ({table, actualTableCell, updateTableCell}) => {
             if(option.id !== currentTarget.id)
             option.classList.remove("selected");
         });
-        const align = currentTarget.id.substring(6, currentTarget.id.length);
-        updateTableCell({align});
+        const valign = currentTarget.id.substring(7, currentTarget.id.length);
+        updateTableCell({valign});
     };
 
     return (
         <div className="options" ref={container}>
-            <div className="option" id="align-left" onClick={handleClick}>
-                <h4>L</h4>
+            <div className="option" id="valign-flex-start" onClick={handleClick}>
+                <h4>T</h4>
             </div>
-            <div className="option" id="align-center" onClick={handleClick}>
+            <div className="option" id="valign-center" onClick={handleClick}>
                 <h4>C</h4>
             </div>
-            <div className="option" id="align-right" onClick={handleClick}> 
-                <h4>R</h4>
+            <div className="option" id="valign-flex-end" onClick={handleClick}> 
+                <h4>B</h4>
             </div>
         </div>
     )
@@ -60,4 +60,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Aligment);
+export default connect(mapStateToProps, mapDispatchToProps)(VerticalAligmnent);

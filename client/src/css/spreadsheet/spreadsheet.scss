@@ -9,9 +9,11 @@ $toolbar_padding: 20px;
 
 .spreadsheet {
     position: absolute;
+    background: grey;
 
     div.toolbar {
         width: 100%;
+        height: 16px;
         position: fixed;
         display: flex;
         background: #283593;
@@ -38,7 +40,7 @@ $toolbar_padding: 20px;
             }
         }
 
-        .option.selected {
+        .option.selected h4 {
             background: red;
         }
     }
@@ -65,13 +67,26 @@ $toolbar_padding: 20px;
 
     textarea {
         width: 100%;
-        height: 100%;
         background: #fff;
         resize: none;
-        overflow: hidden;
         border: none;
-        border-right: $border;
-        border-bottom: $border;
+        padding: 10px;
+        &:focus{
+            outline: none;
+        }
+    }
+
+    div.table-element {
+        display: flex;
+        overflow: hidden;
+        border: $border;
+        background: white;
+        cursor: text;
+    }
+
+
+    div.table-element.focused {
+        border-color: rgb(62, 142, 247);
     }
 
     div.border-top-element, div.border-left-element {
@@ -96,7 +111,6 @@ $toolbar_padding: 20px;
         position: absolute;
         background: black;
         z-index: 10;
-        cursor: move;
     }
 
     div.border-left-element {
@@ -109,6 +123,7 @@ $toolbar_padding: 20px;
             width: 100%;
             height: $resizer_size;
             transform: translateY($resizer_size / 2);
+            cursor: row-resize;
         }
     }
 
@@ -122,6 +137,7 @@ $toolbar_padding: 20px;
             height: 100%;
             width: $resizer_size;
             transform: translateX($resizer_size / 2);
+            cursor: col-resize;
         }
     }
 }

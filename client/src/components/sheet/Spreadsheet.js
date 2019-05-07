@@ -155,12 +155,11 @@ class Spreadsheet extends Component{
         this.setState({
             abandonScrollEvent: true
         });
-        
+
         let height = 0;
         for(let i = 0; i < newStartRow; i++){
             height += borderLeft[i];
         }
-
         this.setState({
             rows: newRows,
             startRow: newStartRow,
@@ -169,11 +168,15 @@ class Spreadsheet extends Component{
             startSpreadsheetTop: height,
             spreadsheetHeight: 0
         });
+        
         window.scrollTo(lastScrollX, height);
+
     };
     handleScroll = e => {
         document.activeElement.blur();
-        this.props.setTableCell(null, null)
+        if(this.props.actualTableCell.row !== -1 || this.props.actualTableCell.col !== -1){
+            this.props.setTableCell(-1, -1)
+        }
 
         if(this.state.abandonScrollEvent){
             this.setState({abandonScrollEvent: false});
@@ -246,29 +249,31 @@ class Spreadsheet extends Component{
         });
     }
     render(){
-        if(!this.props.isInSheet || this.state.loading){
+        const {isInSheet, loading} = this.props;
+        if(!isInSheet || loading){
             return null;
         }
+        const {startRow, endRow, startCol, endCol, lastScrollX, spreadsheetHeight, spreadsheetTop} = this.state;
 
         return (
             <div className="spreadsheet" style={{
-                top: this.state.spreadsheetTop + TOOLBAR_HEIGHT,
-                height: window.innerHeight + 20 + this.state.spreadsheetHeight
+                top: spreadsheetTop + TOOLBAR_HEIGHT,
+                height: window.innerHeight + 20 + spreadsheetHeight
             }}>
                 <Toolbar />
                 <Border 
-                    startRow={this.state.startRow} 
-                    endRow={this.state.endRow} 
-                    startCol={this.state.startCol} 
-                    endCol={this.state.endCol}
-                    scrollX={this.state.lastScrollX}
+                    startRow={startRow} 
+                    endRow={endRow} 
+                    startCol={startCol} 
+                    endCol={endCol}
+                    scrollX={lastScrollX}
                 />
                 <Table
-                    startRow={this.state.startRow} 
-                    endRow={this.state.endRow} 
-                    startCol={this.state.startCol} 
-                    endCol={this.state.endCol} 
-                    scrollX={this.state.lastScrollX}
+                    startRow={startRow} 
+                    endRow={endRow} 
+                    startCol={startCol} 
+                    endCol={endCol} 
+                    scrollX={lastScrollX}
                 />
             </div>
         )
@@ -282,6 +287,7 @@ const mapStateToProps = state => {
         borderLeft: state.sheet.actualSheet.borderLeft,
         borderResized: state.sheet.actualSheet.borderResized,
         topResized: state.sheet.actualSheet.topResized,
+        actualTableCell: state.sheet.actualSheet.actualTableCell
     }
 }
 

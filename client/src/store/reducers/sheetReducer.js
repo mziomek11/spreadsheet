@@ -11,8 +11,8 @@ const initState = {
         topResized: false,
         leftResized: false,
         actualTableCell: {
-            col: null,
-            row: null
+            col: -1,
+            row: -1
         }
     },
     isInSheet: false
@@ -33,7 +33,13 @@ const sheetReducer = (state=initState, action) => {
         case SheetActions.SET_IS_IN_SHEET:
             return {...state, isInSheet: true};
         case SheetActions.RESIZE_SHEET:
-            return {...state, actualSheet: action.payload};
+            return {
+                ...state, 
+                actualSheet: {
+                    ...state.actualSheet,
+                    ...action.payload
+                }
+            };
         case SheetActions.RESIZE_SHEET_BORDER:
             return {
                 ...state, 
