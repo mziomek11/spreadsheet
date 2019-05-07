@@ -13,12 +13,14 @@ class TableElement extends Component{
         }
     }
     componentDidMount(){
-        this.setState({text: this.props.data.text});
+        const {text, backgroundColor} = this.props.data;
+        this.setState({text, backgroundColor});
         this.setupValign();
     }
     componentDidUpdate(){
-        if(this.state.text !== this.props.data.text){
-            this.setState({text: this.props.data.text});
+        const {text} = this.props.data;
+        if(this.state.text !== text){
+            this.setState({text});
         }
         this.setupValign();
     }
@@ -51,14 +53,14 @@ class TableElement extends Component{
         const parentStyle = {
             width: width, 
             height: height,
-            alignItems: valign
+            alignItems: valign,
+            backgroundColor: backgroundColor,
         };
         const textareaStyle = {
             textAlign: align,
             fontWeight: (bold? "bold" : "normal"),
             textDecoration: (underline ? "underline" : "none"),
             fontStyle: (italic ? "italic" : "normal"),
-            backgroundColor: backgroundColor,
             color: fontColor
         };
         return (
@@ -68,6 +70,7 @@ class TableElement extends Component{
                     onChange={handleChange}
                     value={text}
                     style={textareaStyle}
+                    spellCheck={false}
                 />   
             </div>
         )

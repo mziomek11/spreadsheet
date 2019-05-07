@@ -35,13 +35,13 @@ const Aligment = ({table, actualTableCell, updateTableCell}) => {
     return (
         <div className="options" ref={container}>
             <div className="option" id="align-left" onClick={handleClick}>
-                <h4>L</h4>
+                <h4>AL</h4>
             </div>
             <div className="option" id="align-center" onClick={handleClick}>
-                <h4>C</h4>
+                <h4>AC</h4>
             </div>
             <div className="option" id="align-right" onClick={handleClick}> 
-                <h4>R</h4>
+                <h4>AR</h4>
             </div>
         </div>
     )

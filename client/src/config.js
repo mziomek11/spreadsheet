@@ -12,5 +12,5 @@ export const DEFAULT_CELL_DATA = {
     italic: false,
     underline: false,
     fontColor: "#000000",
-    backgroundColor: "ffffff"
+    backgroundColor: "#ffffff"
 };

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {updateTableCell} from "../../../store/actions/sheetActions";
 
-const Bold = ({table, actualTableCell, updateTableCell, optionName, optionText}) => {
+const BooleanOption = ({table, actualTableCell, updateTableCell, optionName, optionText}) => {
     const [selected, setSelected] = useState(false);
     const option = React.createRef();
     
@@ -54,4 +54,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Bold);
+export default connect(mapStateToProps, mapDispatchToProps)(BooleanOption);

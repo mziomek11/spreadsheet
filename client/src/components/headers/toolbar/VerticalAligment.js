@@ -35,13 +35,13 @@ const VerticalAligmnent = ({table, actualTableCell, updateTableCell}) => {
     return (
         <div className="options" ref={container}>
             <div className="option" id="valign-flex-start" onClick={handleClick}>
-                <h4>T</h4>
+                <h4>VT</h4>
             </div>
             <div className="option" id="valign-center" onClick={handleClick}>
-                <h4>C</h4>
+                <h4>VC</h4>
             </div>
             <div className="option" id="valign-flex-end" onClick={handleClick}> 
-                <h4>B</h4>
+                <h4>VB</h4>
             </div>
         </div>
     )

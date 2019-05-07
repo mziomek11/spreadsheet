@@ -19,7 +19,7 @@
   color: #fff;
   padding: 0 20px;
   top: 0;
-  z-index: 10;
+  z-index: 1000;
 }
 
 .spreadsheet div.toolbar .options {
@@ -35,6 +35,7 @@
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  position: relative;
   margin: 0 10px;
   -webkit-user-select: none;
      -moz-user-select: none;
@@ -52,6 +53,12 @@
 
 .spreadsheet div.toolbar .option.selected h4 {
   background: red;
+}
+
+.spreadsheet div.toolbar div.github-picker {
+  position: absolute !important;
+  top: 64px;
+  left: 0;
 }
 
 .spreadsheet div.border-top {
@@ -78,7 +85,7 @@
 
 .spreadsheet textarea {
   width: 100%;
-  background: #fff;
+  background: none;
   resize: none;
   border: none;
   padding: 10px;
