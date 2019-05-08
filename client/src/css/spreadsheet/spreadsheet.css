@@ -83,18 +83,6 @@
   display: flex;
 }
 
-.spreadsheet textarea {
-  width: 100%;
-  background: none;
-  resize: none;
-  border: none;
-  padding: 10px;
-}
-
-.spreadsheet textarea:focus {
-  outline: none;
-}
-
 .spreadsheet div.table-element {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -105,11 +93,23 @@
   cursor: text;
 }
 
+.spreadsheet div.table-element textarea {
+  width: 100%;
+  background: none;
+  resize: none;
+  border: none;
+  padding: 10px;
+}
+
+.spreadsheet div.table-element textarea:focus {
+  outline: none;
+}
+
 .spreadsheet div.table-element.focused {
   border-color: #3e8ef7;
 }
 
-.spreadsheet div.border-top-element, .spreadsheet div.border-left-element {
+.spreadsheet div.border div.border-top-element, .spreadsheet div.border div.border-left-element {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -121,7 +121,7 @@
           justify-content: center;
 }
 
-.spreadsheet div.border-top-element h6, .spreadsheet div.border-left-element h6 {
+.spreadsheet div.border div.border-top-element h6, .spreadsheet div.border div.border-left-element h6 {
   margin: 0;
   padding: 0;
   -webkit-user-select: none;
@@ -130,23 +130,23 @@
           user-select: none;
 }
 
-.spreadsheet div.border-left-element, .spreadsheet div.border-top-element {
+.spreadsheet div.border div.border-left-element, .spreadsheet div.border div.border-top-element {
   position: relative;
   overflow: visible;
   border-bottom: 1px solid black;
 }
 
-.spreadsheet div.border-left-element .resizer, .spreadsheet div.border-top-element .resizer {
+.spreadsheet div.border div.border-left-element .resizer, .spreadsheet div.border div.border-top-element .resizer {
   position: absolute;
   background: black;
   z-index: 10;
 }
 
-.spreadsheet div.border-left-element {
+.spreadsheet div.border div.border-left-element {
   background: yellow;
 }
 
-.spreadsheet div.border-left-element .resizer {
+.spreadsheet div.border div.border-left-element .resizer {
   bottom: 0;
   width: 100%;
   height: 10px;
@@ -155,16 +155,20 @@
   cursor: row-resize;
 }
 
-.spreadsheet div.border-top-element {
+.spreadsheet div.border div.border-top-element {
   background: grey;
 }
 
-.spreadsheet div.border-top-element .resizer {
+.spreadsheet div.border div.border-top-element .resizer {
   right: 0;
   height: 100%;
   width: 10px;
   -webkit-transform: translateX(5px);
           transform: translateX(5px);
   cursor: col-resize;
+}
+
+.spreadsheet div.border div.border-top-element.fucused, .spreadsheet div.border div.border-left-element.focused {
+  background-color: #3e8ef7 !important;
 }
 /*# sourceMappingURL=spreadsheet.css.map */

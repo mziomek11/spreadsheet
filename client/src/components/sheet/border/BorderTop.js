@@ -3,7 +3,7 @@ import BorderTopElement from "./BorderTopElement";
 import {connect} from "react-redux";
 import {CORNER_SIZE} from "../../../config";
 
-const BorderTop = ({startCol, endCol, borderWidths, scrollX}) => {
+const BorderTop = ({startCol, endCol, borderWidths, scrollX, focusedColumn}) => {
     const elements = [];
     let startMouseX = CORNER_SIZE;
     for(let col = startCol; col < endCol; col++){
@@ -13,6 +13,7 @@ const BorderTop = ({startCol, endCol, borderWidths, scrollX}) => {
             width={elementWidth} 
             index={col} 
             key={col}
+            isFocused={col === focusedColumn}
         />)
         startMouseX += elementWidth;
     }
@@ -27,7 +28,8 @@ const BorderTop = ({startCol, endCol, borderWidths, scrollX}) => {
 
 const mapStateToProps = state => {
     return {
-        borderWidths: state.sheet.actualSheet.borderTop
+        borderWidths: state.sheet.actualSheet.borderTop,
+        focusedColumn: state.sheet.actualSheet.actualTableCell.col
     }
 }
 

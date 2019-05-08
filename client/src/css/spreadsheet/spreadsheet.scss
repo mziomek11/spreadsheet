@@ -2,6 +2,7 @@ $button_size: 60px;
 $resizer_size: 10px;
 $border: 1px solid black;
 $toolbar_padding: 20px;
+$focus_color: rgba(62, 142, 247, 1);
 
 * {
     box-sizing: border-box;
@@ -72,79 +73,85 @@ $toolbar_padding: 20px;
         display: flex;
     }
 
-    textarea {
-        width: 100%;
-        background: none;
-        resize: none;
-        border: none;
-        padding: 10px;
-        &:focus{
-            outline: none;
-        }
-    }
-
     div.table-element {
         display: flex;
         overflow: hidden;
         border: $border;
         background: white;
         cursor: text;
+
+        textarea {
+            width: 100%;
+            background: none;
+            resize: none;
+            border: none;
+            padding: 10px;
+            &:focus{
+                outline: none;
+            }
+        }
     }
 
 
     div.table-element.focused {
-        border-color: rgb(62, 142, 247);
+        border-color: $focus_color;
     }
 
-    div.border-top-element, div.border-left-element {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        h6 {
-            margin: 0;
-            padding: 0;
-            user-select: none;
+    div.border {
+        div.border-top-element, div.border-left-element {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+    
+            h6 {
+                margin: 0;
+                padding: 0;
+                user-select: none;
+            }
         }
-    }
-
-    %border-element {
-        position: relative;
-        overflow: visible;
-        border-bottom: $border;
-    }
-
-    %border-resizer {
-        position: absolute;
-        background: black;
-        z-index: 10;
-    }
-
-    div.border-left-element {
-        @extend %border-element;
-        background: yellow;
-     
-        .resizer {
-            @extend %border-resizer;
-            bottom: 0;
-            width: 100%;
-            height: $resizer_size;
-            transform: translateY($resizer_size / 2);
-            cursor: row-resize;
+    
+        %border-element {
+            position: relative;
+            overflow: visible;
+            border-bottom: $border;
         }
-    }
+    
+        %border-resizer {
+            position: absolute;
+            background: black;
+            z-index: 10;
+        }
+    
+        div.border-left-element {
+            @extend %border-element;
+            background: yellow;
+         
+            .resizer {
+                @extend %border-resizer;
+                bottom: 0;
+                width: 100%;
+                height: $resizer_size;
+                transform: translateY($resizer_size / 2);
+                cursor: row-resize;
+            }
+        }
+    
+        div.border-top-element {
+            @extend %border-element;
+            background: grey;
+    
+            .resizer {
+                @extend %border-resizer;
+                right: 0;
+                height: 100%;
+                width: $resizer_size;
+                transform: translateX($resizer_size / 2);
+                cursor: col-resize;
+            }
+        }
 
-    div.border-top-element {
-        @extend %border-element;
-        background: grey;
-
-        .resizer {
-            @extend %border-resizer;
-            right: 0;
-            height: 100%;
-            width: $resizer_size;
-            transform: translateX($resizer_size / 2);
-            cursor: col-resize;
+        div.border-top-element.fucused, div.border-left-element.focused{
+            background-color: $focus_color !important;
         }
     }
 }

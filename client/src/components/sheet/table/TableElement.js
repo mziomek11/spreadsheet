@@ -9,7 +9,8 @@ class TableElement extends Component{
         this.textarea = React.createRef();
         this.state = {
             valign: "",
-            text: ""
+            text: "",
+            textareaChanged: false
         }
     }
     componentDidMount(){
@@ -20,6 +21,12 @@ class TableElement extends Component{
     componentDidUpdate(){
         const {text} = this.props.data;
         if(this.state.text !== text){
+            if(this.state.textareaChanged){
+                this.setState({textareaChanged: false});
+                setTimeout(() => {
+                    this.textarea.current.focus();
+                }, 50)
+            }
             this.setState({text});
         }
         this.setupValign();
@@ -40,6 +47,10 @@ class TableElement extends Component{
         setTableCell(col, row);
     };
     handleChange = ({target}) => {
+        if(target.className === "no-resize" || !target.value){
+            this.setState({textareaChanged: true});
+        }
+
         const {updateTableCell, col, row} = this.props;
         updateTableCell(col, row, {text: target.value});
     };
@@ -63,15 +74,16 @@ class TableElement extends Component{
             fontStyle: (italic ? "italic" : "normal"),
             color: fontColor
         };
+        const areaProps = {
+            ref:textarea,
+            onChange:handleChange,
+            value:text,
+            style:textareaStyle,
+            spellCheck:false
+        }
         return (
             <div className={parentClass} onClick={handleClick} style={parentStyle}>
-                <TextareaAutosize
-                    ref={textarea}
-                    onChange={handleChange}
-                    value={text}
-                    style={textareaStyle}
-                    spellCheck={false}
-                />   
+                {text ? <TextareaAutosize {...areaProps}/> : <textarea className="no-resize" {...areaProps}/>}
             </div>
         )
     }
