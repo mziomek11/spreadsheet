@@ -1,27 +1,25 @@
 import React, {useEffect} from "react";
 import {connect} from "react-redux";
-import {updateTableCell} from "../../../store/actions/sheetActions";
+import {updateTableCells} from "../../../store/actions/sheetActions";
 
-const Aligment = ({table, actualTableCell, updateTableCell}) => {
+const Aligment = ({table, focusedTableCells, updateTableCells}) => {
     const container = React.createRef();
     
     useEffect(() => {
-        const {row, col} = actualTableCell;
-        if(row === -1 && col === -1){
+        if(focusedTableCells.length === 0){
             container.current.childNodes.forEach(option => option.classList.remove("selected"));
             return;
         }
         
-        const {align} = table[actualTableCell.row][actualTableCell.col];
+        const {align} = table[focusedTableCells[0].row][focusedTableCells[0].col];
         container.current.childNodes.forEach(option => {
             if(option.id !== `align-${align}`) option.classList.remove("selected");
             else option.classList.add("selected");
         });
-    }, [actualTableCell]);
+    }, [focusedTableCells]);
 
     const handleClick = ({currentTarget}) => {
-        const {row, col} = actualTableCell
-        if(row === -1 && col === -1) return;
+        if(focusedTableCells.length === 0) return;
 
         currentTarget.classList.add("selected");
         container.current.childNodes.forEach(option => {
@@ -29,7 +27,7 @@ const Aligment = ({table, actualTableCell, updateTableCell}) => {
             option.classList.remove("selected");
         });
         const align = currentTarget.id.substring(6, currentTarget.id.length);
-        updateTableCell({align});
+        updateTableCells({align});
     };
 
     return (
@@ -50,13 +48,13 @@ const Aligment = ({table, actualTableCell, updateTableCell}) => {
 const mapStateToProps = state => {
     return {
         table: state.sheet.actualSheet.table,
-        actualTableCell: state.sheet.actualSheet.actualTableCell
+        focusedTableCells: state.sheet.actualSheet.focusedTableCells
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateTableCell: property => dispatch(updateTableCell(null, null, property))
+        updateTableCells: property => dispatch(updateTableCells([], property))
     };
 };
 

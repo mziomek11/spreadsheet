@@ -174,8 +174,8 @@ class Spreadsheet extends Component{
     };
     handleScroll = e => {
         document.activeElement.blur();
-        if(this.props.actualTableCell.row !== -1 || this.props.actualTableCell.col !== -1){
-            this.props.setTableCell(-1, -1)
+        if(this.props.focusedTableCells.length > 0){
+            this.props.setTableCell([]);
         }
 
         if(this.state.abandonScrollEvent){
@@ -287,7 +287,7 @@ const mapStateToProps = state => {
         borderLeft: state.sheet.actualSheet.borderLeft,
         borderResized: state.sheet.actualSheet.borderResized,
         topResized: state.sheet.actualSheet.topResized,
-        actualTableCell: state.sheet.actualSheet.actualTableCell
+        focusedTableCells: state.sheet.actualSheet.focusedTableCells
     }
 }
 

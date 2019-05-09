@@ -112,29 +112,39 @@ export const makeBorderResizedFalse = () => {
     };
 };
 
-export const setTableCell = (col, row) => {
+export const setTableCell = (focusedCellsArray) => {
     return {
         type: SheetActions.SET_TABLE_CELL,
         payload: {
-            actualTableCell: {
-                col, row
-            }
+            focusedTableCells: [...focusedCellsArray]
         }
     };
 };
 
-export const updateTableCell = (col, row, property) => (dispatch, getState) => {
-    if(!row && !col && col !== 0 && row !== 0){
-        col = getState().sheet.actualSheet.actualTableCell.col;
-        row = getState().sheet.actualSheet.actualTableCell.row;
+export const updateTableCells = (cellArray, property) => (dispatch, getState) => {
+    if(cellArray.length === 0){
+        cellArray = [...getState().sheet.actualSheet.focusedTableCells];
     }
-    if(!row && !col && col !== 0 && row !== 0) return;
+    if(cellArray.length === 0) return;
     
     const newTable = [...getState().sheet.actualSheet.table];
-    newTable[row] = newTable[row].map((element, index) => index === col ? {
-        ...element,
-        ...property
-    } : element);
+    // cellArray.forEach(cell => 
+    //     newTable[cell.row][cell.col] = {
+    //     ...newTable[cell.row][cell.col],
+    //     ...property
+    //     }
+    // );
+    cellArray.forEach(cell => {
+        newTable[cell.row] = newTable[cell.row].map((element, index) => {
+            if(index === cell.col){
+                return {
+                    ...element,
+                    ...property
+                };
+            }
+            return element;
+        })
+    })
     dispatch({
         type: SheetActions.UPDATE_TABLE_CELL,
         payload: newTable

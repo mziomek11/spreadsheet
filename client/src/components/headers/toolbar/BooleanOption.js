@@ -1,19 +1,18 @@
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {updateTableCell} from "../../../store/actions/sheetActions";
+import {updateTableCells} from "../../../store/actions/sheetActions";
 
-const BooleanOption = ({table, actualTableCell, updateTableCell, optionName, optionText}) => {
+const BooleanOption = ({table, focusedTableCells, updateTableCells, optionName, optionText}) => {
     const [selected, setSelected] = useState(false);
     const option = React.createRef();
     
     useEffect(() => {
-        const {row, col} = actualTableCell;
-        if(row === -1 && col === -1){
+        if(focusedTableCells.length === 0){
             option.current.classList.remove("selected");
             return;
         }
 
-        const isSelected = table[row][col][optionName]
+        const isSelected = table[focusedTableCells[0].row][focusedTableCells[0].col][optionName]
         if(isSelected) {
             option.current.classList.add("selected");
             setSelected(true);
@@ -21,17 +20,16 @@ const BooleanOption = ({table, actualTableCell, updateTableCell, optionName, opt
             option.current.classList.remove("selected");
             setSelected(false);
         }
-    }, [actualTableCell]);
+    }, [focusedTableCells]);
 
     const handleClick = () => {
-        const {row, col} = actualTableCell
-        if(row === -1 && col === -1) return;
+        if(focusedTableCells.length === 0) return;
 
         option.current.classList.toggle("selected");
         setSelected(!selected);
         const updateObject = {};
         updateObject[optionName] = !selected;
-        updateTableCell(updateObject);
+        updateTableCells(updateObject);
     };
 
     return (
@@ -44,13 +42,13 @@ const BooleanOption = ({table, actualTableCell, updateTableCell, optionName, opt
 const mapStateToProps = state => {
     return {
         table: state.sheet.actualSheet.table,
-        actualTableCell: state.sheet.actualSheet.actualTableCell
+        focusedTableCells: state.sheet.actualSheet.focusedTableCells
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateTableCell: property => dispatch(updateTableCell(null, null, property))
+        updateTableCells: property => dispatch(updateTableCells([], property))
     };
 };
 

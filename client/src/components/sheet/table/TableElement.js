@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {updateTableCell, setTableCell} from "../../../store/actions/sheetActions";
+import {updateTableCells, setTableCell} from "../../../store/actions/sheetActions";
 import TextareaAutosize from 'react-autosize-textarea';
 
 class TableElement extends Component{
@@ -41,18 +41,29 @@ class TableElement extends Component{
             this.setState({valign: newValign});
         }
     }
-    handleClick = () => {
-        const {setTableCell, col, row} = this.props;
-        this.textarea.current.focus();
-        setTableCell(col, row);
+    handleClick = e => {
+        const {setTableCell, focusedTableCells, col, row} = this.props;
+        if(e.ctrlKey) {
+            const removing = focusedTableCells.filter(cell => cell.row === row && cell.col === col).length > 0; 
+
+            if(removing){
+                const newTableCells = focusedTableCells.filter((cell) => !(cell.row === row && cell.col === col));
+                setTableCell(newTableCells);
+            }else {
+                setTableCell([...focusedTableCells, {col, row}]);
+            }
+        } else {
+            this.textarea.current.focus();
+            setTableCell([{col, row}]);
+        }
     };
     handleChange = ({target}) => {
         if(target.className === "no-resize" || !target.value){
             this.setState({textareaChanged: true});
         }
 
-        const {updateTableCell, col, row} = this.props;
-        updateTableCell(col, row, {text: target.value});
+        const {updateTableCells, col, row} = this.props;
+        updateTableCells([{col, row}], {text: target.value});
     };
     render(){
         const {handleClick, handleChange, textarea, props, state} = this;
@@ -83,17 +94,23 @@ class TableElement extends Component{
         }
         return (
             <div className={parentClass} onClick={handleClick} style={parentStyle}>
-                {text ? <TextareaAutosize {...areaProps}/> : <textarea className="no-resize" {...areaProps}/>}
+                {isFocused ? <TextareaAutosize {...areaProps}/> : <textarea className="no-resize" {...areaProps}/>}
             </div>
         )
     }
-}
+};
+
+const mapStateToProps = state => {
+    return {
+        focusedTableCells: state.sheet.actualSheet.focusedTableCells
+    };
+};
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateTableCell: (col, row, text) => dispatch(updateTableCell(col, row, text)),
+        updateTableCells: (cellArray, text) => dispatch(updateTableCells(cellArray, text)),
         setTableCell: (col, row) => dispatch(setTableCell(col, row))
     }
 }
 
-export default connect(null, mapDispatchToProps)(TableElement);
+export default connect(mapStateToProps, mapDispatchToProps)(TableElement);

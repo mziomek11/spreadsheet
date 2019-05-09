@@ -5,7 +5,7 @@ import {connect} from "react-redux";
 import {CORNER_SIZE} from "../../../config";
 
 const Table = ({startRow, endRow, startCol, endCol, actualSheet, scrollX}) => {
-    const {borderLeft, borderTop, table, actualTableCell} = actualSheet
+    const {borderLeft, borderTop, table, focusedTableCells} = actualSheet
     const jsxTable = [];
     try {
         for(let row = 0; row < endRow - startRow; row++){
@@ -13,8 +13,10 @@ const Table = ({startRow, endRow, startCol, endCol, actualSheet, scrollX}) => {
             for(let col = 0; col < endCol - startCol; col++){
                 const elementCol = startCol + col;
                 const elementRow = startRow + row;
-                const isFocused = elementCol === actualTableCell.col 
-                                && elementRow === actualTableCell.row;                    
+                let isFocused = false;
+                if(focusedTableCells.length > 0){
+                    isFocused = focusedTableCells.filter(cell => cell.row === elementRow && cell.col === col).length > 0;
+                }                 
                 jsxTable[row].push(
                     <TableElement 
                         col={elementCol} 

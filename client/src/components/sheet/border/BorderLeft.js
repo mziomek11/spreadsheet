@@ -3,7 +3,8 @@ import BorderLeftElement from "./BorderLeftElement";
 import {connect} from "react-redux";
 import {CORNER_SIZE, TOOLBAR_HEIGHT} from "../../../config";
 
-const BorderLeft = ({startRow, endRow, borderHeigts, scrollX, focusedRow}) => {
+const BorderLeft = ({startRow, endRow, borderHeigts, scrollX, focusedTableCells}) => {
+    const focusedRows = focusedTableCells.map(cell => cell.row);
     const elements = [];
     let startMouseY = CORNER_SIZE + TOOLBAR_HEIGHT;
     for(let row = startRow; row < endRow; row++){
@@ -13,7 +14,7 @@ const BorderLeft = ({startRow, endRow, borderHeigts, scrollX, focusedRow}) => {
             startMouseY={startMouseY}
             index={row} 
             key={row}
-            isFocused={row === focusedRow}
+            isFocused={focusedRows.includes(row)}
         />)
         startMouseY += elementHeight;
     }
@@ -30,7 +31,7 @@ const BorderLeft = ({startRow, endRow, borderHeigts, scrollX, focusedRow}) => {
 const mapStateToProps = state => {
     return {
         borderHeigts: state.sheet.actualSheet.borderLeft,
-        focusedRow: state.sheet.actualSheet.actualTableCell.row
+        focusedTableCells: state.sheet.actualSheet.focusedTableCells
     }
 }
 

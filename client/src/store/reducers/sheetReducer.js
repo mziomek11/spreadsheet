@@ -10,10 +10,7 @@ const initState = {
         borderResized: false,
         topResized: false,
         leftResized: false,
-        actualTableCell: {
-            col: -1,
-            row: -1
-        }
+        focusedTableCells: []
     },
     isInSheet: false
 }

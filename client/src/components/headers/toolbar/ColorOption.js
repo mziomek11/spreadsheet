@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import {connect} from "react-redux";
-import {updateTableCell} from "../../../store/actions/sheetActions";
+import {updateTableCells} from "../../../store/actions/sheetActions";
 import {GithubPicker} from 'react-color'
 
-const ColorOption = ({actualTableCell, updateTableCell, optionName, optionText, startColor}) => {
+const ColorOption = ({focusedTableCells, updateTableCells, optionName, optionText, startColor}) => {
     let option = React.createRef();
     const [showPicker, setShowPicker] = useState(false);
     const [color, setColor] = useState(startColor);
@@ -29,13 +29,12 @@ const ColorOption = ({actualTableCell, updateTableCell, optionName, optionText, 
         }
     };
     const isCellSelected = () => {
-        const {row, col} = actualTableCell
-        return row !== -1 && col !== -1;
+        return focusedTableCells.length > 0;
     };
     const updateColor = newColor => {
         const updateObject = {};
         updateObject[optionName] = newColor;
-        updateTableCell(updateObject);
+        updateTableCells(updateObject);
     };
     return(
         <div className="option" ref={option}> 
@@ -55,13 +54,13 @@ const ColorOption = ({actualTableCell, updateTableCell, optionName, optionText, 
 
 const mapStateToProps = state => {
     return {
-        actualTableCell: state.sheet.actualSheet.actualTableCell
+        focusedTableCells: state.sheet.actualSheet.focusedTableCells
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateTableCell: property => dispatch(updateTableCell(null, null, property))
+        updateTableCells: property => dispatch(updateTableCells([], property))
     };
 };
 
