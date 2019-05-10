@@ -78,7 +78,6 @@ $focus_color: rgba(62, 142, 247, 1);
         overflow: hidden;
         border: $border;
         background: white;
-        cursor: text;
 
         textarea {
             width: 100%;
@@ -153,5 +152,11 @@ $focus_color: rgba(62, 142, 247, 1);
         div.border-top-element.fucused, div.border-left-element.focused{
             background-color: $focus_color !important;
         }
+    }
+
+    div.focus-rect {
+        background: red;
+        z-index: 10000;
+        position: absolute;
     }
 }

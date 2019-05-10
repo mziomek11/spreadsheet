@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {updateTableCells, setTableCell} from "../../../store/actions/sheetActions";
+import {updateTableCells, setTableCells, setFocusRectData} from "../../../store/actions/sheetActions";
 import TextareaAutosize from 'react-autosize-textarea';
 
 class TableElement extends Component{
@@ -30,7 +30,7 @@ class TableElement extends Component{
             this.setState({text});
         }
         this.setupValign();
-    }
+    };
     setupValign = () => {
         let newValign = this.props.data.valign;
         const textHeight = this.textarea.current.offsetHeight;
@@ -40,21 +40,21 @@ class TableElement extends Component{
         if(newValign !== this.state.valign){
             this.setState({valign: newValign});
         }
-    }
+    };
     handleClick = e => {
-        const {setTableCell, focusedTableCells, col, row} = this.props;
+        const {setTableCells, focusedTableCells, col, row} = this.props;
         if(e.ctrlKey) {
             const removing = focusedTableCells.filter(cell => cell.row === row && cell.col === col).length > 0; 
 
             if(removing){
                 const newTableCells = focusedTableCells.filter((cell) => !(cell.row === row && cell.col === col));
-                setTableCell(newTableCells);
+                setTableCells(newTableCells);
             }else {
-                setTableCell([...focusedTableCells, {col, row}]);
+                setTableCells([...focusedTableCells, {col, row}]);
             }
         } else {
             this.textarea.current.focus();
-            setTableCell([{col, row}]);
+            setTableCells([{col, row}]);
         }
     };
     handleChange = ({target}) => {
@@ -65,14 +65,62 @@ class TableElement extends Component{
         const {updateTableCells, col, row} = this.props;
         updateTableCells([{col, row}], {text: target.value});
     };
+    handleMouseDown = e => {
+        if(!this.props.isFocused){
+            this.handleClick(e);
+            this.props.setFocusRectData({start: {
+                row: this.props.row,
+                col: this.props.col
+            }});
+        };
+    };
+    handleMouseEnter = e => {
+        if(this.props.rectFocusData.start.row !== -1){
+            this.props.setFocusRectData({end: {
+                row: this.props.row,
+                col: this.props.col
+            }});
+        };
+    };
+    handleMouseUp = e => {
+        const {start, end} = this.props.rectFocusData;
+        if(start.row !== -1 && end.row !== -1){
+            const startFocusCol = Math.min(start.col, end.col);
+            const endFocusCol = Math.max(start.col, end.col);
+            const startFocusRow = Math.min(start.row, end.row);
+            const endFocusRow = Math.max(start.row, end.row);
+            const focusArray = [];
+            for(let row = startFocusRow; row <= endFocusRow; row++){
+                for(let col = startFocusCol; col <= endFocusCol; col++){
+                    focusArray.push({row, col})
+                }
+            }
+            if(e.ctrlKey){
+                this.props.setTableCells([...this.props.focusedTableCells, ...focusArray])
+            }else{
+                this.props.setTableCells(focusArray)
+            }
+        };
+        this.props.setFocusRectData({
+            start: {
+                row: -1,
+                col: -1
+            },
+            end: {
+                row: -1,
+                col: -1
+            }
+        });
+    }
     render(){
-        const {handleClick, handleChange, textarea, props, state} = this;
-        const {data, width, height, isFocused} = props;
+        const {handleClick, handleMouseEnter, handleMouseUp, handleMouseDown, handleChange, textarea, props, state} = this;
+        const {data, width, height, isFocused, isPseudoFocused} = props;
         const {valign, text} = state;
         const {align, bold, underline, italic, backgroundColor, fontColor} = data;
 
-        const parentClass = "table-element" + (isFocused ? " focused" : "");
+        const parentClass = "table-element" + (isFocused || isPseudoFocused ? " focused" : "");
         const parentStyle = {
+            cursor: this.props.isFocused ? "text" : "default",
             width: width, 
             height: height,
             alignItems: valign,
@@ -90,10 +138,18 @@ class TableElement extends Component{
             onChange:handleChange,
             value:text,
             style:textareaStyle,
-            spellCheck:false
+            spellCheck:false,
+            disabled: !this.props.isFocused
         }
         return (
-            <div className={parentClass} onClick={handleClick} style={parentStyle}>
+            <div 
+                className={parentClass} 
+                style={parentStyle} 
+                onClick={handleClick}
+                onMouseDown={handleMouseDown}
+                onMouseEnter={handleMouseEnter}
+                onMouseUp={handleMouseUp}
+            >
                 {isFocused ? <TextareaAutosize {...areaProps}/> : <textarea className="no-resize" {...areaProps}/>}
             </div>
         )
@@ -102,14 +158,16 @@ class TableElement extends Component{
 
 const mapStateToProps = state => {
     return {
-        focusedTableCells: state.sheet.actualSheet.focusedTableCells
+        focusedTableCells: state.sheet.actualSheet.focusedTableCells,
+        rectFocusData: state.sheet.actualSheet.rectFocusData
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         updateTableCells: (cellArray, text) => dispatch(updateTableCells(cellArray, text)),
-        setTableCell: (col, row) => dispatch(setTableCell(col, row))
+        setTableCells: cellsArray => dispatch(setTableCells(cellsArray)),
+        setFocusRectData: focusRectData => dispatch(setFocusRectData(focusRectData))
     }
 }
 

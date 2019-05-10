@@ -5,7 +5,11 @@ import {connect} from "react-redux";
 import {CORNER_SIZE} from "../../../config";
 
 const Table = ({startRow, endRow, startCol, endCol, actualSheet, scrollX}) => {
-    const {borderLeft, borderTop, table, focusedTableCells} = actualSheet
+    const {borderLeft, borderTop, table, focusedTableCells, rectFocusData} = actualSheet
+    const startFocusCol = Math.min(rectFocusData.start.col, rectFocusData.end.col);
+    const endFocusCol = Math.max(rectFocusData.start.col, rectFocusData.end.col);
+    const startFocusRow = Math.min(rectFocusData.start.row, rectFocusData.end.row);
+    const endFocusRow = Math.max(rectFocusData.start.row, rectFocusData.end.row);
     const jsxTable = [];
     try {
         for(let row = 0; row < endRow - startRow; row++){
@@ -14,8 +18,14 @@ const Table = ({startRow, endRow, startCol, endCol, actualSheet, scrollX}) => {
                 const elementCol = startCol + col;
                 const elementRow = startRow + row;
                 let isFocused = false;
+                let pseudoFocused = false;
                 if(focusedTableCells.length > 0){
                     isFocused = focusedTableCells.filter(cell => cell.row === elementRow && cell.col === col).length > 0;
+                }
+                if(!isFocused && startFocusRow >= 0){
+                    const rowOk = elementCol >= startFocusCol && elementCol <= endFocusCol;
+                    const colOk = elementRow >= startFocusRow && elementRow <= endFocusRow;
+                    pseudoFocused = rowOk && colOk;
                 }                 
                 jsxTable[row].push(
                     <TableElement 
@@ -25,6 +35,7 @@ const Table = ({startRow, endRow, startCol, endCol, actualSheet, scrollX}) => {
                         height={borderLeft[elementRow]}
                         data={table[elementRow][elementCol]}
                         isFocused={isFocused}
+                        isPseudoFocused={pseudoFocused}
                     />
                 )
             }

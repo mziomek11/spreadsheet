@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
-import {setIsInSheet, resizeSheet, makeBorderResizedFalse, setTableCell} from "../../store/actions/sheetActions";
+import {setIsInSheet, resizeSheet, makeBorderResizedFalse, setTableCells} from "../../store/actions/sheetActions";
 import {DEFAUTLT_CELL_WIDTH, DEFAUTLT_CELL_HEIGHT, TOOLBAR_HEIGHT, CELLS_PER_WHEEL, CORNER_SIZE} from "../../config";
 import Toolbar from "../headers/toolbar/Toolbar";
 import Border from "./border/Border";
@@ -175,7 +175,7 @@ class Spreadsheet extends Component{
     handleScroll = e => {
         document.activeElement.blur();
         if(this.props.focusedTableCells.length > 0){
-            this.props.setTableCell([]);
+            this.props.setTableCells([]);
         }
 
         if(this.state.abandonScrollEvent){
@@ -255,26 +255,15 @@ class Spreadsheet extends Component{
         }
         const {startRow, endRow, startCol, endCol, lastScrollX, spreadsheetHeight, spreadsheetTop} = this.state;
 
+        const rowColProps = {startRow, endRow, startCol, endCol};
         return (
             <div className="spreadsheet" style={{
                 top: spreadsheetTop + TOOLBAR_HEIGHT,
                 height: window.innerHeight + 20 + spreadsheetHeight
             }}>
                 <Toolbar />
-                <Border 
-                    startRow={startRow} 
-                    endRow={endRow} 
-                    startCol={startCol} 
-                    endCol={endCol}
-                    scrollX={lastScrollX}
-                />
-                <Table
-                    startRow={startRow} 
-                    endRow={endRow} 
-                    startCol={startCol} 
-                    endCol={endCol} 
-                    scrollX={lastScrollX}
-                />
+                <Border {...rowColProps} scrollX={lastScrollX}/>
+                <Table {...rowColProps} scrollX={lastScrollX}/>
             </div>
         )
     }
@@ -296,7 +285,7 @@ const mapDispatchToProps = dispatch => {
         setIsInSheet: isInSheet => dispatch(setIsInSheet(isInSheet)),
         resizeSheet: (cols, rows, makeBigger) => dispatch(resizeSheet(cols, rows)),
         makeBorderResizedFalse: () => dispatch(makeBorderResizedFalse()),
-        setTableCell: (col, row) => dispatch(setTableCell(col, row))
+        setTableCells: (col, row) => dispatch(setTableCells(col, row))
     }
 }
 

@@ -10,7 +10,17 @@ const initState = {
         borderResized: false,
         topResized: false,
         leftResized: false,
-        focusedTableCells: []
+        focusedTableCells: [],
+        rectFocusData: {
+            start: {
+                row: -1,
+                col: -1,
+            },
+            end: {
+                row: -1,
+                col: -1
+            }
+        }
     },
     isInSheet: false
 }
@@ -67,6 +77,17 @@ const sheetReducer = (state=initState, action) => {
                 actualSheet: {
                     ...state.actualSheet,
                     table: action.payload
+                }
+            };
+        case SheetActions.SET_FOCUS_RECT_DATA:
+            return {
+                ...state,
+                actualSheet: {
+                    ...state.actualSheet,
+                    rectFocusData: {
+                        ...state.actualSheet.rectFocusData,
+                        ...action.payload
+                    }
                 }
             };
         case AuthActions.LOGOUT_SUCCESS:

@@ -90,7 +90,6 @@
   overflow: hidden;
   border: 1px solid black;
   background: white;
-  cursor: text;
 }
 
 .spreadsheet div.table-element textarea {
@@ -170,5 +169,11 @@
 
 .spreadsheet div.border div.border-top-element.fucused, .spreadsheet div.border div.border-left-element.focused {
   background-color: #3e8ef7 !important;
+}
+
+.spreadsheet div.focus-rect {
+  background: red;
+  z-index: 10000;
+  position: absolute;
 }
 /*# sourceMappingURL=spreadsheet.css.map */

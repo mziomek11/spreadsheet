@@ -112,7 +112,7 @@ export const makeBorderResizedFalse = () => {
     };
 };
 
-export const setTableCell = (focusedCellsArray) => {
+export const setTableCells = (focusedCellsArray) => {
     return {
         type: SheetActions.SET_TABLE_CELL,
         payload: {
@@ -149,6 +149,13 @@ export const updateTableCells = (cellArray, property) => (dispatch, getState) =>
         type: SheetActions.UPDATE_TABLE_CELL,
         payload: newTable
     });
+};
+
+export const setFocusRectData = focusRectData => {
+    return {
+        type: SheetActions.SET_FOCUS_RECT_DATA,
+        payload: focusRectData
+    };
 };
 
 const errorAction = err => {
