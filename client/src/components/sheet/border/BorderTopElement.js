@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {resizeSheetBorder} from "../../../store/actions/sheetActions";
+import {resizeSheetBorder} from "../../../store/actions/borderActions";
 import {CORNER_SIZE, MIN_CELL_SIZE} from "../../../config";
 
 const BorderTopElement = ({index, startMouseX, isFocused, width, resizeSheetBorder}) => {

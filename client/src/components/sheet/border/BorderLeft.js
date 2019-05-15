@@ -30,8 +30,8 @@ const BorderLeft = ({startRow, endRow, borderHeigts, scrollX, focusedTableCells}
 
 const mapStateToProps = state => {
     return {
-        borderHeigts: state.sheet.actualSheet.borderLeft,
-        focusedTableCells: state.sheet.actualSheet.focusedTableCells
+        borderHeigts: state.border.borderLeft,
+        focusedTableCells: state.focus.focusedTableCells
     }
 }
 

@@ -83,6 +83,19 @@
   display: flex;
 }
 
+.spreadsheet div.table-element textarea, .spreadsheet div.table-element p {
+  width: 100%;
+  background: none;
+  resize: none;
+  border: none;
+  padding: 10px;
+  line-height: 100%;
+}
+
+.spreadsheet div.table-element textarea:focus, .spreadsheet div.table-element p:focus {
+  outline: none;
+}
+
 .spreadsheet div.table-element {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -92,20 +105,21 @@
   background: white;
 }
 
-.spreadsheet div.table-element textarea {
-  width: 100%;
-  background: none;
-  resize: none;
-  border: none;
-  padding: 10px;
-}
-
-.spreadsheet div.table-element textarea:focus {
-  outline: none;
+.spreadsheet div.table-element p {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  word-break: break-all;
 }
 
 .spreadsheet div.table-element.focused {
   border-color: #3e8ef7;
+  background: #3e8ef7 !important;
+}
+
+.spreadsheet div.table-element:focus {
+  outline: none;
 }
 
 .spreadsheet div.border div.border-top-element, .spreadsheet div.border div.border-left-element {

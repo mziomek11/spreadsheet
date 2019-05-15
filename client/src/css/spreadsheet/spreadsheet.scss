@@ -73,6 +73,18 @@ $focus_color: rgba(62, 142, 247, 1);
         display: flex;
     }
 
+    %table-element-text-container {
+        width: 100%;
+        background: none;
+        resize: none;
+        border: none;
+        padding: 10px;
+        line-height: 100%;
+        &:focus{
+            outline: none;
+        }
+    } 
+
     div.table-element {
         display: flex;
         overflow: hidden;
@@ -80,20 +92,24 @@ $focus_color: rgba(62, 142, 247, 1);
         background: white;
 
         textarea {
-            width: 100%;
-            background: none;
-            resize: none;
-            border: none;
-            padding: 10px;
-            &:focus{
-                outline: none;
-            }
+            @extend %table-element-text-container;
+        }
+
+        p {
+            @extend %table-element-text-container;
+            user-select: none;
+            word-break: break-all;
         }
     }
 
 
     div.table-element.focused {
         border-color: $focus_color;
+        background: $focus_color !important;
+    }
+
+    div.table-element:focus{
+        outline: none;
     }
 
     div.border {

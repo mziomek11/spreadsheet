@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {connect} from "react-redux";
-import {updateTableCells} from "../../../store/actions/sheetActions";
+import {updateTableCells} from "../../../store/actions/tableActions";
 import {GithubPicker} from 'react-color'
 
 const ColorOption = ({focusedTableCells, updateTableCells, optionName, optionText, startColor}) => {
@@ -54,7 +54,7 @@ const ColorOption = ({focusedTableCells, updateTableCells, optionName, optionTex
 
 const mapStateToProps = state => {
     return {
-        focusedTableCells: state.sheet.actualSheet.focusedTableCells
+        focusedTableCells: state.focus.focusedTableCells
     };
 };
 

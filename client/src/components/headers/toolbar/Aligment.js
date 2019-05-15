@@ -1,8 +1,8 @@
 import React, {useEffect} from "react";
 import {connect} from "react-redux";
-import {updateTableCells} from "../../../store/actions/sheetActions";
+import {updateTableCells} from "../../../store/actions/tableActions";
 
-const Aligment = ({table, focusedTableCells, updateTableCells}) => {
+const Aligment = ({table, focusedTableCells, updateTableCells, cols, rows}) => {
     const container = React.createRef();
     
     useEffect(() => {
@@ -10,13 +10,15 @@ const Aligment = ({table, focusedTableCells, updateTableCells}) => {
             container.current.childNodes.forEach(option => option.classList.remove("selected"));
             return;
         }
+        const {row, col} = focusedTableCells[0]
+        if(row >= rows || col >= cols) return;
         
-        const {align} = table[focusedTableCells[0].row][focusedTableCells[0].col];
+        const {align} = table[row][col];
         container.current.childNodes.forEach(option => {
             if(option.id !== `align-${align}`) option.classList.remove("selected");
             else option.classList.add("selected");
         });
-    }, [focusedTableCells]);
+    }, [focusedTableCells, rows, cols]);
 
     const handleClick = ({currentTarget}) => {
         if(focusedTableCells.length === 0) return;
@@ -47,8 +49,10 @@ const Aligment = ({table, focusedTableCells, updateTableCells}) => {
 
 const mapStateToProps = state => {
     return {
-        table: state.sheet.actualSheet.table,
-        focusedTableCells: state.sheet.actualSheet.focusedTableCells
+        table: state.table.table,
+        focusedTableCells: state.focus.focusedTableCells,
+        rows: state.display.rows,
+        cols: state.display.cols
     };
 };
 
