@@ -4,8 +4,9 @@ import {setDisplayData} from "../../store/actions/displayActions";
 import {setFocusedTableCells} from "../../store/actions/focusActions";
 import {makeBorderResizedFalse} from "../../store/actions/borderActions";
 import {setIsInSheet} from "../../store/actions/sheetActions";
+import {handleCopy, handlePaste} from "../../store/actions/shortcutActions";
 import {resizeTable, updateTableCells} from "../../store/actions/tableActions";
-import {isArrowKey} from "../../helpers/inputHelpers";
+import {isArrowKey, isLetter} from "../../helpers/inputHelpers";
 import {getEndRow, getScrollHeight} from "../../helpers/sheetHelpers";
 import {DEFAUTLT_CELL_WIDTH, DEFAUTLT_CELL_HEIGHT, TOOLBAR_HEIGHT, CELLS_PER_WHEEL, CORNER_SIZE} from "../../config";
 import Toolbar from "../headers/toolbar/Toolbar";
@@ -24,6 +25,8 @@ class Spreadsheet extends Component{
         window.scrollTo(0, 0);
         this.calculateRowsAndCols();
         this.props.setDisplayData({loading: false});
+        console.log("poprawic performance wklejania");
+        console.log("poprawic performace scroloowania/wheelowania");
     };
     componentWillUnmount(){
         window.removeEventListener("scroll", this.handleScroll);
@@ -87,6 +90,21 @@ class Spreadsheet extends Component{
         const {tagName} = document.activeElement;
         if(isArrowKey(e) && tagName === "BODY"){
             e.preventDefault();
+        };
+        if(e.ctrlKey && isLetter(e) && tagName !== "TEXTAREA" && this.props.focusedTableCells.length > 0) 
+            this.handleShorcut(e.key.toUpperCase());
+    };
+    handleShorcut = key => {
+        const {handleCopy, handlePaste} = this.props;
+        switch(key){
+            case "C": 
+                handleCopy();
+                break;
+            case "V":
+                handlePaste();
+                break;
+            default:
+                break;
         }
     };
     handleWheel = e => {
@@ -155,7 +173,6 @@ class Spreadsheet extends Component{
             this.props.setDisplayData({abandonScrollEvent: false});
             return;
         }
-        console.log("scroll event")
         const {rows, startSpreadsheetTop, cols} = this.props.displayData;
         const {borderLeft, borderTop, resizeTable} = this.props;
 
@@ -262,7 +279,9 @@ const mapDispatchToProps = dispatch => {
         makeBorderResizedFalse: () => dispatch(makeBorderResizedFalse()),
         setFocusedTableCells: cellsArray => dispatch(setFocusedTableCells(cellsArray)),
         updateTableCells: (cellArray, property) => dispatch(updateTableCells(cellArray, property)),
-        setDisplayData: data => dispatch(setDisplayData(data))
+        setDisplayData: data => dispatch(setDisplayData(data)),
+        handleCopy: () => dispatch(handleCopy()),
+        handlePaste: () => dispatch(handlePaste())
     };
 };
 

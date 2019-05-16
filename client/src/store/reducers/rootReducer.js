@@ -6,6 +6,7 @@ import authReducer from "./authReducer";
 import focusReducer from "./focusReducer";
 import borderReducer from "./borderReducer";
 import tableReducer from "./tableReducer";
+import shortcutReducer from "./shortcutReducer";
 
 const rootReducer = combineReducers({
     sheet: sheetReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
     border: borderReducer,
     table: tableReducer,
     focus: focusReducer,
+    shortcut: shortcutReducer,
     error: errorReducer,
     auth: authReducer
 })

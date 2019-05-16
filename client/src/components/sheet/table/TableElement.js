@@ -274,6 +274,7 @@ class TableElement extends Component{
     };
     handleKeyDown = e => {
         const {row, col, focusedTableCells, updateTableCells, setFocusedTableCells} = this.props;
+        if(e.ctrlKey) return;
         if(this.shouldMoveFocus(e)){
             e.preventDefault();
             setFocusedTableCells([this.getFocusPosition(e.key)]);
@@ -281,12 +282,12 @@ class TableElement extends Component{
         else if(focusedTableCells.length !== 1) return;
         else if(this.textContainer.current.matches(":focus")){
             if(isEnter(e)){
-                this.elementDiv.current.focus();
+                setFocusedTableCells([this.getFocusPosition("ArrowDown")]);
             }
         }
         else if(!isLetter(e)) return;
         else {
-            updateTableCells([{col, row}], this.props.text + e.key);
+            updateTableCells([{col, row}], {text: this.props.data.text});
             this.textContainer.current.focus();
         }
     };
@@ -414,7 +415,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        updateTableCells: (cellArray, text) => dispatch(updateTableCells(cellArray, text)),
+        updateTableCells: (cellArray, property) => dispatch(updateTableCells(cellArray, property)),
         setFocusedTableCells: cellsArray => dispatch(setFocusedTableCells(cellsArray)),
         setFocusRectData: (focusRectData, adding) => dispatch(setFocusRectData(focusRectData, adding)),
         setDisplayData: data => dispatch(setDisplayData(data)),

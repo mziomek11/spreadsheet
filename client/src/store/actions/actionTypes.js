@@ -26,6 +26,11 @@ export const FocusActions = {
     SET_FOCUS_RECT_DATA: "SET_FOCUS_RECT_DATA"
 };
 
+export const ShortcutActions = {
+    COPY: "COPY",
+    PASTE: "PASTE"
+};
+
 export const ErrorActions = {
     GET_ERRORS: "GET_ERRORS",
     CLEAR_ERRORS: "CLEAR_ERROR"
