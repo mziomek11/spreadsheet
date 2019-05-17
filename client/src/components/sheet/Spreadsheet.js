@@ -1,10 +1,11 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {setDisplayData} from "../../store/actions/displayActions";
+import {setScrollData} from "../../store/actions/scrollActions";
 import {setFocusedTableCells} from "../../store/actions/focusActions";
 import {makeBorderResizedFalse} from "../../store/actions/borderActions";
 import {setIsInSheet} from "../../store/actions/sheetActions";
-import {handleCopy, handlePaste} from "../../store/actions/shortcutActions";
+import {handleCopy, handlePaste, handleUndo, handleRedo} from "../../store/actions/shortcutActions";
 import {resizeTable, updateTableCells} from "../../store/actions/tableActions";
 import {isArrowKey, isLetter} from "../../helpers/inputHelpers";
 import {getEndRow, getScrollHeight} from "../../helpers/sheetHelpers";
@@ -35,15 +36,25 @@ class Spreadsheet extends Component{
         this.props.setIsInSheet(false);
     };
     calculateRowsAndCols = () => {
+        // const rowsInWindow = Math.ceil((window.innerHeight - TOOLBAR_HEIGHT - CORNER_SIZE) / DEFAUTLT_CELL_HEIGHT);
+        // const colsInWindow = Math.ceil((window.innerWidth - CORNER_SIZE) / DEFAUTLT_CELL_WIDTH);
+        // this.props.setDisplayData({
+        //     endRow: rowsInWindow,
+        //     endCol: colsInWindow,
+        //     rows: rowsInWindow,
+        //     cols: colsInWindow,
+        // });
+        // this.props.resizeTable(colsInWindow, rowsInWindow, true);
+        // this.props.setIsInSheet(true);
         const rowsInWindow = Math.ceil((window.innerHeight - TOOLBAR_HEIGHT - CORNER_SIZE) / DEFAUTLT_CELL_HEIGHT);
         const colsInWindow = Math.ceil((window.innerWidth - CORNER_SIZE) / DEFAUTLT_CELL_WIDTH);
         this.props.setDisplayData({
             endRow: rowsInWindow,
             endCol: colsInWindow,
-            rows: rowsInWindow,
-            cols: colsInWindow,
+            rows: 1000,
+            cols: 1000,
         });
-        this.props.resizeTable(colsInWindow, rowsInWindow, true);
+        this.props.resizeTable(1000, 1000, true);
         this.props.setIsInSheet(true);
     };
     componentDidUpdate(){
@@ -95,13 +106,19 @@ class Spreadsheet extends Component{
             this.handleShorcut(e.key.toUpperCase());
     };
     handleShorcut = key => {
-        const {handleCopy, handlePaste} = this.props;
+        const {handleCopy, handlePaste, handleUndo, handleRedo} = this.props;
         switch(key){
             case "C": 
                 handleCopy();
                 break;
             case "V":
                 handlePaste();
+                break;
+            case "Z":
+                handleUndo();
+                break;
+            case "Y":
+                handleRedo();
                 break;
             default:
                 break;
@@ -117,28 +134,30 @@ class Spreadsheet extends Component{
             this.wheelDown();
     };
     wheelUp = () => {
-        const {startRow, lastScrollX} = this.props.displayData;
+        const {startRow} = this.props.displayData;
+        const {lastScrollX} = this.props.scrollData;
         const {borderLeft} = this.props;
 
         const newStartRow = startRow < CELLS_PER_WHEEL ? 0 : startRow - CELLS_PER_WHEEL;
         const newEndRow = getEndRow(newStartRow, borderLeft);
         const height = getScrollHeight(newStartRow, borderLeft);
 
-        this.props.setDisplayData({
-            abandonScrollEvent: true
+        this.props.setScrollData({
+            abandonScrollEvent: true,
+            spreadsheetTop: height,
+            startSpreadsheetTop: height,
+            spreadsheetHeight: 0
         });
 
         window.scrollTo(lastScrollX, height);
         this.props.setDisplayData({
             startRow: newStartRow,
-            endRow: newEndRow,
-            spreadsheetTop: height,
-            startSpreadsheetTop: height,
-            spreadsheetHeight: 0
+            endRow: newEndRow
         });
     };
     wheelDown = () => {
-        const {rows, startRow, cols, lastScrollX} = this.props.displayData;
+        const {rows, startRow, cols} = this.props.displayData;
+        const {lastScrollX} = this.props.scrollData;
         const {borderLeft, resizeTable} = this.props;
 
         const newStartRow = startRow + CELLS_PER_WHEEL;
@@ -151,29 +170,29 @@ class Spreadsheet extends Component{
             newRows = newEndRow;
         } 
 
-        this.props.setDisplayData({
-            abandonScrollEvent: true
+        this.props.setScrollData({
+            abandonScrollEvent: true,
+            spreadsheetTop: height,
+            startSpreadsheetTop: height,
+            spreadsheetHeight: 0
         });
 
         this.props.setDisplayData({
             rows: newRows,
             startRow: newStartRow,
-            endRow: newEndRow,
-            spreadsheetTop: height,
-            startSpreadsheetTop: height,
-            spreadsheetHeight: 0
+            endRow: newEndRow
         });
         
-        window.scrollTo(lastScrollX, height);
-
+        window.scrollTo(lastScrollX, height);;
     };
     handleScroll = e => {
         //document.activeElement.blur();
-        if(this.props.displayData.abandonScrollEvent){
-            this.props.setDisplayData({abandonScrollEvent: false});
+        if(this.props.scrollData.abandonScrollEvent){
+            this.props.setScrollData({abandonScrollEvent: false});
             return;
         }
-        const {rows, startSpreadsheetTop, cols} = this.props.displayData;
+        const {rows, cols} = this.props.displayData;
+        const {startSpreadsheetTop} = this.props.scrollData;
         const {borderLeft, borderTop, resizeTable} = this.props;
 
         //VERTICAL
@@ -225,6 +244,11 @@ class Spreadsheet extends Component{
         if(addRow || addCol){
             resizeTable(newCols, newRows);
         }
+        this.props.setScrollData({
+            lastScrollX: window.scrollX,
+            spreadsheetTop: window.scrollY,
+            spreadsheetHeight: startSpreadsheetTop -  window.scrollY
+        });
 
         this.props.setDisplayData({
             rows: newRows,
@@ -232,10 +256,7 @@ class Spreadsheet extends Component{
             endRow: newEndRow,
             cols: newCols,
             startCol: newStartCol,
-            endCol: newEndCol,
-            lastScrollX: window.scrollX,
-            spreadsheetTop: window.scrollY,
-            spreadsheetHeight: startSpreadsheetTop -  window.scrollY
+            endCol: newEndCol
         });
     }
     render(){
@@ -243,7 +264,8 @@ class Spreadsheet extends Component{
         if(!isInSheet || loading){
             return null;
         }
-        const {startRow, endRow, startCol, endCol, lastScrollX, spreadsheetHeight, spreadsheetTop, } = this.props.displayData;
+        const {startRow, endRow, startCol, endCol} = this.props.displayData;
+        const {lastScrollX, spreadsheetHeight, spreadsheetTop} = this.props.scrollData;
 
         const rowColProps = {startRow, endRow, startCol, endCol};
         return (
@@ -264,6 +286,7 @@ const mapStateToProps = state => {
     return {
         isInSheet: state.sheet.isInSheet,
         displayData: state.display,
+        scrollData: state.scroll,
         borderTop: state.border.borderTop,
         borderLeft: state.border.borderLeft,
         borderResized: state.border.borderResized,
@@ -280,8 +303,11 @@ const mapDispatchToProps = dispatch => {
         setFocusedTableCells: cellsArray => dispatch(setFocusedTableCells(cellsArray)),
         updateTableCells: (cellArray, property) => dispatch(updateTableCells(cellArray, property)),
         setDisplayData: data => dispatch(setDisplayData(data)),
+        setScrollData: data => dispatch(setScrollData(data)),
         handleCopy: () => dispatch(handleCopy()),
-        handlePaste: () => dispatch(handlePaste())
+        handlePaste: () => dispatch(handlePaste()),
+        handleUndo: () => dispatch(handleUndo()),
+        handleRedo: () => dispatch(handleRedo())
     };
 };
 

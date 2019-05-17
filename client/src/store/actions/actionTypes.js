@@ -7,13 +7,18 @@ export const SheetActions = {
     SET_IS_IN_SHEET: "SET_IS_IN_SHEET",
 };
 
-export const DisplayAction = {
+export const DisplayActions = {
     SET_DISPLAY_DATA: "SET_DISPLAY_DATA",
+};
+
+export const ScrollAcions = {
+    SET_SCROLL_DATA: "SET_SCROLL_DATA",
 };
 
 export const TableActions = {
     RESIZE_TABLE: "RESIZE_SHEET",
-    UPDATE_TABLE_CELL: "UPDATE_TABLE_CELL"
+    UPDATE_TABLE_CELL: "UPDATE_TABLE_CELL",
+    SET_TABLE: "SET_TABLE"
 }
 
 export const BorderActions = {
@@ -28,7 +33,10 @@ export const FocusActions = {
 
 export const ShortcutActions = {
     COPY: "COPY",
-    PASTE: "PASTE"
+    PASTE: "PASTE",
+    UNDO: "UNDO",
+    REDO: "REDO",
+    ADD_TABLE: "ADD_TABLE"
 };
 
 export const ErrorActions = {

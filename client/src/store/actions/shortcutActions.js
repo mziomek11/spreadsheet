@@ -1,5 +1,6 @@
 import {ShortcutActions} from "./actionTypes";
-import {updateTableCells, resizeTable} from "./tableActions";
+import {updateTableCellsDiffProps, resizeTable} from "./tableActions";
+import {setTable} from "./tableActions";
 import {setDisplayData} from "./displayActions";
 
 export const handleCopy = () => (dispatch, getState) => {
@@ -87,7 +88,10 @@ export const handlePaste = () => (dispatch, getState) => {
         }));
     }
 
-    //Updating elements
+    const cellArray = [];
+    const propertyArray = [];
+
+    //Filling update data;
     for(let pasteRow = pasteStartRow; pasteRow <= pasteEndRow; pasteRow++){
         const nthPasteRow = pasteRow - pasteStartRow;
         let nthCopyRow = copyHeight >= pasteHeight ? nthPasteRow : nthPasteRow  % copyHeight;
@@ -96,14 +100,43 @@ export const handlePaste = () => (dispatch, getState) => {
             const nthPasteCol = pasteCol - pasteStartCol;
             let nthCopyCol = copyWidth >= pasteWidth ? nthPasteCol : nthPasteCol  % copyWidth;
 
-            const cellToUpdate = [{col: pasteCol, row: pasteRow}];
             const cellProps = copiedData.filter(cell => cell.row === copyStartRow + nthCopyRow && cell.col === copyStartCol + nthCopyCol)[0];
-            const {col, row, ...propsToUpdate} = cellProps;
-            dispatch(updateTableCells(cellToUpdate, propsToUpdate))
-        }
-    }
 
+            const {col, row, ...propsToUpdate} = cellProps;
+            cellArray.push({col: pasteCol, row: pasteRow});
+            propertyArray.push({...propsToUpdate})
+        }
+    };
+
+    dispatch(updateTableCellsDiffProps(cellArray, propertyArray));
     dispatch({
         type: ShortcutActions.PASTE
+    });
+};
+
+export const handleUndo = () => (dispatch, getState) => {
+    const {tables, actualTableIndex} = getState().shortcut;
+    const newTableIndex = Math.max(0, actualTableIndex - 1);
+    const tableToSet = tables[newTableIndex];
+
+    if(!tableToSet) return;
+    dispatch(setTable(tableToSet));
+    dispatch({
+        type: "UNDO",
+        payload: newTableIndex
+    });
+};
+
+export const handleRedo = () => (dispatch, getState) => {
+    const {tables, actualTableIndex} = getState().shortcut;
+    if(actualTableIndex === tables.length - 1) return;
+
+    const newTableIndex = actualTableIndex + 1;
+    const tableToSet = tables[newTableIndex];
+
+    dispatch(setTable(tableToSet));
+    dispatch({
+        type: "REDO",
+        payload: newTableIndex
     });
 };

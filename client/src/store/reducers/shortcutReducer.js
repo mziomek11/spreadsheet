@@ -5,7 +5,9 @@ const initState = {
     copyStartCol: 0,
     copyEndCol: 0,
     copyStartRow: 0,
-    copyEndRow: 0
+    copyEndRow: 0,
+    tables: [],
+    actualTableIndex: 0
 };
 
 const shortcutReducer = (state=initState, action) => {
@@ -17,6 +19,22 @@ const shortcutReducer = (state=initState, action) => {
             };
         case ShortcutActions.PASTE:
             return state;
+        case ShortcutActions.ADD_TABLE:
+            return {
+                ...state,
+                tables: action.payload,
+                actualTableIndex: action.payload.length - 1
+            };
+        case ShortcutActions.UNDO:
+            return {
+                ...state,
+                actualTableIndex: action.payload
+            };
+        case ShortcutActions.REDO:
+            return {
+                ...state,
+                actualTableIndex: action.payload
+            };
         default:
             return state;
     };

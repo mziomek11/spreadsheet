@@ -1,4 +1,4 @@
-import {DisplayAction} from "../actions/actionTypes";
+import {DisplayActions} from "../actions/actionTypes";
 
 const initState = {
     rows: 0,
@@ -6,17 +6,12 @@ const initState = {
     startRow: 0,
     endRow: 0,
     startCol: 0,
-    endCol: 0,
-    lastScrollX: 0,
-    spreadsheetTop: 0,
-    startSpreadsheetTop: 0,
-    spreadsheetHeight: 0,
-    abandonScrollEvent: true,
+    endCol: 0
 };
 
 const displayReducer = (state=initState, action) => {
     switch(action.type){
-        case DisplayAction.SET_DISPLAY_DATA:
+        case DisplayActions.SET_DISPLAY_DATA:
             return {
                 ...state,
                 ...action.payload

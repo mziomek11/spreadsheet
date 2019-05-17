@@ -7,10 +7,12 @@ import focusReducer from "./focusReducer";
 import borderReducer from "./borderReducer";
 import tableReducer from "./tableReducer";
 import shortcutReducer from "./shortcutReducer";
+import scrollReducer from "./scrollReducer";
 
 const rootReducer = combineReducers({
     sheet: sheetReducer,
     display: displayReducer,
+    scroll: scrollReducer,
     border: borderReducer,
     table: tableReducer,
     focus: focusReducer,

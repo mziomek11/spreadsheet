@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import {isLetter, isArrowKey, isEnter} from "../../../helpers/inputHelpers";
 import {getEndRow, getEndCol, getStartRow, getStartCol, getScrollHeight, getScrollWidth} from "../../../helpers/sheetHelpers";
 import {setDisplayData} from "../../../store/actions/displayActions";
+import {setScrollData} from "../../../store/actions/scrollActions";
 import {updateTableCells, resizeTable} from "../../../store/actions/tableActions";
 import {setFocusRectData, setFocusedTableCells} from "../../../store/actions/focusActions";
 import {removeDuplicates, filterObjects} from "../../../helpers/arrayHelpers";
@@ -71,12 +72,17 @@ class TableElement extends Component{
     selectedEndCol = () => this.props.col === this.props.displayData.endCol - 1;
     selectedEndRow = () => this.props.row === this.props.displayData.endRow - 1;
     increaseCols = amount => {
-        const {borderTop, displayData, resizeTable} = this.props;
-        const {rows, endCol, cols, spreadsheetTop} = displayData;
+        const {borderTop, displayData, scrollData, resizeTable} = this.props;
+        const {rows, endCol, cols} = displayData;
+        const {spreadsheetTop} = scrollData;
 
         let newEndCol = endCol + amount;
-        const newStartCol = getStartCol(newEndCol, borderTop);
-        newEndCol = getEndCol(newStartCol, borderTop);
+        let newStartCol = getStartCol(newEndCol, borderTop);
+        const possibleNewEndCol = getEndCol(newStartCol, borderTop);
+        if(possibleNewEndCol < newEndCol){
+            newStartCol++;
+            newEndCol = getEndCol(newStartCol, borderTop);
+        }else newEndCol = possibleNewEndCol;
         const width = getScrollWidth(newStartCol, borderTop);
 
         let newCols = cols;
@@ -84,42 +90,50 @@ class TableElement extends Component{
             resizeTable(newEndCol, rows);
             newCols = newEndCol;
         } 
-        this.props.setDisplayData({
-            abandonScrollEvent: true
+        this.props.setScrollData({
+            abandonScrollEvent: true,
+            lastScrollX: width
         });
 
         this.props.setDisplayData({
             startCol: newStartCol,
             cols: newCols,
             endCol: newEndCol,
-            lastScrollX: width
         });                
 
         window.scrollTo(width, spreadsheetTop);
     };
     decreaseCols = amount => {
-        const {borderTop, displayData} = this.props;
-        const {startCol, spreadsheetTop} = displayData;
+        const {borderTop, displayData, scrollData} = this.props;
+        const {startCol} = displayData;
+        const {spreadsheetTop} = scrollData;
         const newStartCol = startCol < amount ? 0 : startCol - amount;
         const newEndCol = getEndCol(newStartCol, borderTop);
         const width = getScrollWidth(newStartCol, borderTop);
-        this.props.setDisplayData({
-            abandonScrollEvent: true
+        this.props.setScrollData({
+            abandonScrollEvent: true,
+            lastScrollX: width
         });
 
         window.scrollTo(width, spreadsheetTop);
         this.props.setDisplayData({
             startCol: newStartCol,
-            endCol: newEndCol,
-            lastScrollX: width
+            endCol: newEndCol
         });
     }
     increaseRows = amount => {
         const {borderLeft, resizeTable} = this.props;
-        const {rows, cols, lastScrollX, endRow} = this.props.displayData;
+        const {rows, cols, endRow} = this.props.displayData;
+        const {lastScrollX} = this.props.scrollData;
+
         let newEndRow = endRow + amount;
-        const newStartRow = getStartRow(newEndRow, borderLeft);
-        newEndRow = getEndRow(newStartRow, borderLeft);
+        let newStartRow = getStartRow(newEndRow, borderLeft);
+        const possibleNewEndRow = getEndRow(newStartRow, borderLeft);
+        if(possibleNewEndRow < newEndRow){
+            newStartRow ++;
+            newEndRow = getEndRow(newStartRow, borderLeft);
+        }else newEndRow = possibleNewEndRow;
+
         const height = getScrollHeight(newStartRow, borderLeft);
 
         let newRows = rows;
@@ -128,39 +142,40 @@ class TableElement extends Component{
             newRows = newEndRow;
         } 
 
-        this.props.setDisplayData({
-            abandonScrollEvent: true
+        this.props.setScrollData({
+            abandonScrollEvent: true,
+            spreadsheetTop: height,
+            startSpreadsheetTop: height,
+            spreadsheetHeight: 0
         });
 
         this.props.setDisplayData({
             rows: newRows,
             startRow: newStartRow,
-            endRow: newEndRow,
-            spreadsheetTop: height,
-            startSpreadsheetTop: height,
-            spreadsheetHeight: 0
+            endRow: newEndRow
         });
         
         window.scrollTo(lastScrollX, height);
     };
     descreaseRows = amount => {
-        const {borderLeft, displayData} = this.props;
-        const {startRow, lastScrollX} = displayData;
+        const {borderLeft, displayData, scrollData} = this.props;
+        const {startRow} = displayData;
+        const {lastScrollX} = scrollData;
         const newStartRow = startRow < amount ? 0 : startRow - amount;
         const newEndRow = getEndRow(newStartRow, borderLeft);
         const height = getScrollHeight(newStartRow, borderLeft);
 
-        this.props.setDisplayData({
-            abandonScrollEvent: true
+        this.props.setScrollData({
+            abandonScrollEvent: true,
+            spreadsheetTop: height,
+            startSpreadsheetTop: height,
+            spreadsheetHeight: 0
         });
 
         window.scrollTo(lastScrollX, height);
         this.props.setDisplayData({
             startRow: newStartRow,
-            endRow: newEndRow,
-            spreadsheetTop: height,
-            startSpreadsheetTop: height,
-            spreadsheetHeight: 0
+            endRow: newEndRow
         });
     };
     increaseColsAndRows = amount => {
@@ -184,8 +199,12 @@ class TableElement extends Component{
             newCols = newEndCol;
             newRows = newEndRow;
         } 
-        this.props.setDisplayData({
-            abandonScrollEvent: true
+        this.props.setScrollData({
+            abandonScrollEvent: true,
+            lastScrollX: width,
+            spreadsheetTop: height,
+            startSpreadsheetTop: height,
+            spreadsheetHeight: 0
         });
 
         this.props.setDisplayData({
@@ -195,10 +214,6 @@ class TableElement extends Component{
             startRow: newStartRow,
             endRow: newEndRow,
             rows: newRows,
-            lastScrollX: width,
-            spreadsheetTop: height,
-            startSpreadsheetTop: height,
-            spreadsheetHeight: 0
         });                
         
         window.scrollTo(width, height);
@@ -273,7 +288,7 @@ class TableElement extends Component{
         }
     };
     handleKeyDown = e => {
-        const {row, col, focusedTableCells, updateTableCells, setFocusedTableCells} = this.props;
+        const {focusedTableCells, setFocusedTableCells} = this.props;
         if(e.ctrlKey) return;
         if(this.shouldMoveFocus(e)){
             e.preventDefault();
@@ -281,15 +296,10 @@ class TableElement extends Component{
         }
         else if(focusedTableCells.length !== 1) return;
         else if(this.textContainer.current.matches(":focus")){
-            if(isEnter(e)){
-                setFocusedTableCells([this.getFocusPosition("ArrowDown")]);
-            }
+            if(isEnter(e)) setFocusedTableCells([this.getFocusPosition("ArrowDown")]);
         }
         else if(!isLetter(e)) return;
-        else {
-            updateTableCells([{col, row}], {text: this.props.data.text});
-            this.textContainer.current.focus();
-        }
+        else this.textContainer.current.focus();
     };
     shouldMoveFocus = e => {
         const isTextContainerFocused = this.textContainer.current.matches(":focus");
@@ -408,6 +418,7 @@ const mapStateToProps = state => {
         focusedTableCells: state.focus.focusedTableCells,
         rectFocusData: state.focus.rectFocusData,
         displayData: state.display,
+        scrollData: state.scroll,
         borderLeft: state.border.borderLeft,
         borderTop: state.border.borderTop
     };
@@ -419,6 +430,7 @@ const mapDispatchToProps = dispatch => {
         setFocusedTableCells: cellsArray => dispatch(setFocusedTableCells(cellsArray)),
         setFocusRectData: (focusRectData, adding) => dispatch(setFocusRectData(focusRectData, adding)),
         setDisplayData: data => dispatch(setDisplayData(data)),
+        setScrollData: data => dispatch(setScrollData(data)),
         resizeTable: (cols, rows) => dispatch(resizeTable(cols, rows))
     };
 };
