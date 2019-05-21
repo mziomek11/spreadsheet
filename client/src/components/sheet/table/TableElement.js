@@ -24,6 +24,21 @@ class TableElement extends Component{
         this.setState({text, backgroundColor});
         this.setupValign();
     }
+    shouldComponentUpdate(nextProps, nextState){
+        const propsPropertiesToCheck = ["width", "height", "isFocused", "isPseudoFocused"];
+        const statePropertiesToCheck = ["valign", "text"];
+
+        for(let property of propsPropertiesToCheck){
+            if(nextProps[property] !== this.props[property]) return true;
+        }
+        for(let property of statePropertiesToCheck){
+            if(nextState[property] !== this.state[property]) return true;
+        }
+        for(let property in this.props.data){
+            if(nextProps.data[property] !== this.props.data[property]) return true;
+        }
+        return false;
+    }
     componentDidUpdate(){
         const {focusedTableCells, col, row} = this.props;
         const {text} = this.props.data;

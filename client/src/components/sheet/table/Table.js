@@ -17,8 +17,7 @@ const Table = ({startRow, endRow, startCol, endCol, scrollX, focus, borderLeft, 
             for(let col = 0; col < endCol - startCol; col++){
                 const elementCol = startCol + col;
                 const elementRow = startRow + row;
-                let isFocused = false;
-                let pseudoFocused = false;
+                let isFocused = false, pseudoFocused = false;
                 if(focusedTableCells.length > 0){
                     isFocused = focusedTableCells.filter(cell => cell.row === elementRow && cell.col === elementCol).length > 0;             
                 }
@@ -36,10 +35,6 @@ const Table = ({startRow, endRow, startCol, endCol, scrollX, focus, borderLeft, 
                         data={table[elementRow][elementCol]}
                         isFocused={isFocused}
                         isPseudoFocused={pseudoFocused}
-                        startRow={startRow}
-                        endRow={endRow}
-                        startCol={startCol}
-                        endCol={endCol}
                     />
                 )
             }
@@ -66,6 +61,11 @@ const mapStateToProps = state => {
     return {
         table: state.table.table,
         focus: state.focus,
+        startRow: state.display.startRow,
+        endRow: state.display.endRow,
+        startCol: state.display.startCol,
+        endCol: state.display.endCol,
+        scrollX: state.scroll.lastScrollX,
         borderLeft: state.border.borderLeft,
         borderTop: state.border.borderTop
     };

@@ -29,6 +29,9 @@ const BorderTop = ({startCol, endCol, borderWidths, scrollX, focusedTableCells})
 
 const mapStateToProps = state => {
     return {
+        startCol: state.display.startCol,
+        endCol: state.display.endCol,
+        scrollX: state.scroll.lastScrollX,
         borderWidths: state.border.borderTop,
         focusedTableCells: state.focus.focusedTableCells
     }

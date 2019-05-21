@@ -1,39 +1,50 @@
-import React from "react";
+import React, {Component} from "react";
 import {connect} from "react-redux";
 import {resizeSheetBorder} from "../../../store/actions/borderActions";
 import {CORNER_SIZE, MIN_CELL_SIZE} from "../../../config";
 
-const BorderLeftElement = ({index, height, isFocused, startMouseY, resizeSheetBorder}) => {
-    const handleResizeClick = () => {
-        window.addEventListener("mousemove", handleResizeMove);
-        window.addEventListener("mouseup", handleMouseUp);
+class BorderLeftElement extends Component{
+    shouldComponentUpdate(nextProps){
+        const propsPropertiesToCheck = ["isFocused", "height", "index"];
+
+        for(let property of propsPropertiesToCheck){
+            if(nextProps[property] !== this.props[property]) return true;
+        }
+        return false;
     };
-    const handleResizeMove = e => {
-        const wantedSize = e.clientY - startMouseY;
+    handleResizeClick = () => {
+        window.addEventListener("mousemove", this.handleResizeMove);
+        window.addEventListener("mouseup", this.handleMouseUp);
+    };
+    handleResizeMove = e => {
+        const wantedSize = e.clientY - this.props.startMouseY;
         const newSize = wantedSize > MIN_CELL_SIZE ? wantedSize : MIN_CELL_SIZE;
-        resizeSheetBorder(index, newSize);
+        this.props.resizeSheetBorder(this.props.index, newSize);
     };
-    const handleMouseUp = () => {
-        window.removeEventListener("mousemove", handleResizeMove);
-        window.removeEventListener("mouseup", handleMouseUp);
+    handleMouseUp = () => {
+        window.removeEventListener("mousemove", this.handleResizeMove);
+        window.removeEventListener("mouseup", this.handleMouseUp);
     };
-    return (
-        <div>
-            <div 
-                className={"border-left-element" + (isFocused ? " focused" : "")} 
-                style={{height, width: CORNER_SIZE}}
-            >
-                <h6>{index + 1}</h6>
-                <div className="resizer" onMouseDown={handleResizeClick}/>
+    render(){
+        const {isFocused, height, index} = this.props;
+        return (
+            <div>
+                <div 
+                    className={"border-left-element" + (isFocused ? " focused" : "")} 
+                    style={{height, width: CORNER_SIZE}}
+                >
+                    <h6>{index + 1}</h6>
+                    <div className="resizer" onMouseDown={this.handleResizeClick}/>
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    };
+};
 
 const mapDispatchToProps = dispatch => {
     return {
         resizeSheetBorder: (i, height) => dispatch(resizeSheetBorder(i, height, false))
-    }
-}
+    };
+};
 
 export default connect(null, mapDispatchToProps)(BorderLeftElement);

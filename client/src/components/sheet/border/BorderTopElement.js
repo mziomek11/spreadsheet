@@ -1,40 +1,51 @@
-import React from "react";
+import React, {Component} from "react";
 import {connect} from "react-redux";
 import {resizeSheetBorder} from "../../../store/actions/borderActions";
 import {CORNER_SIZE, MIN_CELL_SIZE} from "../../../config";
 
-const BorderTopElement = ({index, startMouseX, isFocused, width, resizeSheetBorder}) => {
-    const handleResizeClick = () => {
-        window.addEventListener("mousemove", handleResizeMove);
-        window.addEventListener("mouseup", handleMouseUp);
+class BorderTopElement extends Component{
+    shouldComponentUpdate(nextProps){
+        const propsPropertiesToCheck = ["isFocused", "width", "index"];
+
+        for(let property of propsPropertiesToCheck){
+            if(nextProps[property] !== this.props[property]) return true;
+        }
+        return false;
     };
-    const handleResizeMove = e => {
-        const wantedSize = e.clientX - startMouseX;
+    handleResizeClick = () => {
+        window.addEventListener("mousemove", this.handleResizeMove);
+        window.addEventListener("mouseup", this.handleMouseUp);
+    };
+    handleResizeMove = e => {
+        const wantedSize = e.clientX - this.props.startMouseX;
         const newSize = wantedSize > MIN_CELL_SIZE ? wantedSize : MIN_CELL_SIZE;
-        resizeSheetBorder(index, newSize);
+        this.props.resizeSheetBorder(this.props.index, newSize);
     };
-    const handleMouseUp = () => {
-        window.removeEventListener("mousemove", handleResizeMove);
-        window.removeEventListener("mouseup", handleMouseUp);
+    handleMouseUp = () => {
+        window.removeEventListener("mousemove", this.handleResizeMove);
+        window.removeEventListener("mouseup", this.handleMouseUp);
     };
-    const toColumnName = num => {
+    toColumnName = num => {
         for (var ret = '', a = 1, b = 26; (num -= a) >= 0; a = b, b *= 26) {
           ret = String.fromCharCode(parseInt((num % b) / a) + 65) + ret;
         }
         return ret;
     };
-    return (
-        <div>
-            <div 
-                className={"border-top-element" + (isFocused ? " fucused" : "")} 
-                style={{width, height: CORNER_SIZE}}
-            >
-                <h6>{toColumnName(index + 1)}</h6>
-                <div className="resizer" onMouseDown={handleResizeClick}/>
+    render(){
+        const {isFocused, width, index} = this.props;
+        return (
+            <div>
+                <div 
+                    className={"border-top-element" + (isFocused ? " fucused" : "")} 
+                    style={{width, height: CORNER_SIZE}}
+                >
+                    <h6>{this.toColumnName(index + 1)}</h6>
+                    <div className="resizer" onMouseDown={this.handleResizeClick}/>
+                </div>
             </div>
-        </div>
-    );
-}
+        );
+    };
+};
 
 const mapDispatchToProps = dispatch => {
     return {

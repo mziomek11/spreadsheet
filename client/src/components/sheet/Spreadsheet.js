@@ -16,8 +16,19 @@ import Table from "./table/Table";
 import "../../css/spreadsheet/spreadsheet.css";
 
 class Spreadsheet extends Component{
-    state = {
-        loading: true
+    shouldComponentUpdate(nextProps){
+        const scrollPropertiesToCheck = ["lastScrollX", "spreadsheetHeight", "spreadsheetTop"];
+        for(let property of scrollPropertiesToCheck){
+            if(nextProps.scrollData[property] !== this.props.scrollData[property]) return true;
+        }
+
+        const propsPropertiesToCheck = ["topResized", "leftResized"];
+        for(let property of propsPropertiesToCheck){
+            if(nextProps[property] !== this.props[property]) return true;
+        }
+
+        if(this.props.isInSheet !== nextProps.isInSheet) return true;
+        return false;
     };
     componentDidMount(){
         window.addEventListener("scroll", this.handleScroll);
@@ -26,8 +37,6 @@ class Spreadsheet extends Component{
         window.scrollTo(0, 0);
         this.calculateRowsAndCols();
         this.props.setDisplayData({loading: false});
-        console.log("poprawic performance wklejania");
-        console.log("poprawic performace scroloowania/wheelowania");
     };
     componentWillUnmount(){
         window.removeEventListener("scroll", this.handleScroll);
@@ -156,7 +165,7 @@ class Spreadsheet extends Component{
         });
     };
     wheelDown = () => {
-        const {rows, startRow, cols} = this.props.displayData;
+        const {rows, startRow, endRow, cols} = this.props.displayData;
         const {lastScrollX} = this.props.scrollData;
         const {borderLeft, resizeTable} = this.props;
 
@@ -176,14 +185,14 @@ class Spreadsheet extends Component{
             startSpreadsheetTop: height,
             spreadsheetHeight: 0
         });
+        const newDispayData = {};
+        if(rows !== newRows) newDispayData.rows = newRows;
+        if(startRow !== newStartRow) newDispayData.startRow = newStartRow;
+        if(endRow !== newEndRow) newDispayData.endRow = newEndRow
 
-        this.props.setDisplayData({
-            rows: newRows,
-            startRow: newStartRow,
-            endRow: newEndRow
-        });
+        this.props.setDisplayData(newDispayData);
         
-        window.scrollTo(lastScrollX, height);;
+        window.scrollTo(lastScrollX, height);
     };
     handleScroll = e => {
         //document.activeElement.blur();
@@ -191,6 +200,7 @@ class Spreadsheet extends Component{
             this.props.setScrollData({abandonScrollEvent: false});
             return;
         }
+        
         const {rows, cols} = this.props.displayData;
         const {startSpreadsheetTop} = this.props.scrollData;
         const {borderLeft, borderTop, resizeTable} = this.props;
@@ -264,10 +274,8 @@ class Spreadsheet extends Component{
         if(!isInSheet || loading){
             return null;
         }
-        const {startRow, endRow, startCol, endCol} = this.props.displayData;
         const {lastScrollX, spreadsheetHeight, spreadsheetTop} = this.props.scrollData;
 
-        const rowColProps = {startRow, endRow, startCol, endCol};
         return (
             <div className="spreadsheet" style={{
                 top: spreadsheetTop + TOOLBAR_HEIGHT,
@@ -275,8 +283,8 @@ class Spreadsheet extends Component{
                 width: (window.innerWidth * 2 + lastScrollX).toString() + "px"
             }}>
                 <Toolbar />
-                <Border {...rowColProps} scrollX={lastScrollX} />
-                <Table {...rowColProps} scrollX={lastScrollX} />
+                <Border />
+                <Table />
             </div>
         )
     }
@@ -291,6 +299,7 @@ const mapStateToProps = state => {
         borderLeft: state.border.borderLeft,
         borderResized: state.border.borderResized,
         topResized: state.border.topResized,
+        leftResized: state.border.leftResized,
         focusedTableCells: state.focus.focusedTableCells
     };
 };
