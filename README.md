@@ -13,19 +13,19 @@
 It is my second project in React. I wanted to create something like Google Docs spreadsheets. I did not complete this project, but I still learned a lot about cooperation between frontend and backend via API. I also started to care more about optimalization.
 
 ## Technologies
-Frontend
+Frontend:
 
 * React
 * Redux
 * Sass
 
-Backend
+Backend:
 
 * Express
 * MongoDB
 
 ## Features
-Sheet
+Sheet:
 
 * Resizing
 * Cut, Copy, Paste
@@ -34,7 +34,7 @@ Sheet
 * Background and font color
 * Bold, italic, underline text
 
-Auth
+Auth:
 * Login system
 * Account sheets storage
 
