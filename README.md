@@ -39,7 +39,7 @@ Auth
 * Account sheets storage
 
 ## Status
-Project is  _no longer continue_, because at the time of creation I had no idea how could I improve very bad big sheet performance, and I focused on other projects
+Project is  _no longer continue_, because at the time of creation I had no idea how could I improve very bad big sheet performance, and I focused on other projects.
 
 ## Inspiration
 Project inspired by [Google Sheets](https://www.google.pl/intl/pl/sheets/about/).
